@@ -1,0 +1,309 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Pianoskolan</title>
+    <meta name="description" content="Pianoskolan">
+    <meta name="author" content="Andreas">
+
+    <style rel="stylesheet" type="text/css">
+        html, body {
+            height: 100%;
+            width: 100%;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: black;
+        }
+
+        .main {
+            align-items: center;
+            display: flex;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .pianoholder {
+            background-color: white;
+        }
+
+        #clav > div {
+            position: relative;
+            float: left;
+            width: 45px;
+            height: 200px;
+            border: 1px solid black;
+        }
+
+        #clav > .black {
+            height: 120px;
+            width: 30px;
+            position: relative;
+            margin-left: -16px;
+            margin-right: -16px;
+            background: black;
+            z-index: 10;
+        }
+
+        #clav > div.highlighted {
+            background: red;
+        }
+
+        #clav > div > span {
+            display: block;
+            width: 100%;
+            text-align: center;
+            position: absolute;
+            bottom: 10px;
+        }
+
+        #clav > div.black > span {
+            color: white;
+        }
+
+    </style>
+</head>
+<div class="main">
+    <div class="pianoholder">
+        <div id="clav">
+            <div><span>c2</span></div>
+            <div class="black"><span>c#2</span></div>
+            <div><span>d2</span></div>
+            <div class="black"><span>d#2</span></div>
+            <div><span>e2</span></div>
+            <div><span>f2</span></div>
+            <div class="black"><span>f#2</span></div>
+            <div><span>g2</span></div>
+            <div class="black"><span>g#2</span></div>
+            <div><span>a2</span></div>
+            <div class="black"><span>a#2</span></div>
+            <div><span>b2</span></div>
+            <div><span>c3</span></div>
+            <div class="black"><span>c#3</span></div>
+            <div><span>d3</span></div>
+            <div class="black"><span>d#3</span></div>
+            <div><span>e3</span></div>
+            <div><span>f3</span></div>
+            <div class="black"><span>f#3</span></div>
+            <div><span>g3</span></div>
+            <div class="black"><span>g#3</span></div>
+            <div><span>a3</span></div>
+            <div class="black"><span>a#3</span></div>
+            <div><span>b3</span></div>
+            <div><span>c4</span></div>
+            <div class="black"><span>c#4</span></div>
+            <div><span>d4</span></div>
+            <div class="black"><span>d#4</span></div>
+            <div><span>e4</span></div>
+            <div><span>f4</span></div>
+            <div class="black"><span>f#4</span></div>
+            <div><span>g4</span></div>
+            <div class="black"><span>g#4</span></div>
+            <div><span>a4</span></div>
+            <div class="black"><span>a#4</span></div>
+            <div><span>b4</span></div>
+            <div><span>c5</span></div>
+            <div class="black"><span>c#5</span></div>
+            <div><span>d5</span></div>
+            <div class="black"><span>d#5</span></div>
+            <div><span>e5</span></div>
+            <div><span>f5</span></div>
+            <div class="black"><span>f#5</span></div>
+            <div><span>g5</span></div>
+            <div class="black"><span>g#5</span></div>
+            <div><span>a5</span></div>
+            <div class="black"><span>a#5</span></div>
+            <div><span>b5</span></div>
+            <div><span>c6</span></div>
+            <div class="black"><span>c#6</span></div>
+            <div><span>d6</span></div>
+            <div class="black"><span>d#6</span></div>
+            <div><span>e6</span></div>
+            <div><span>f6</span></div>
+            <div class="black"><span>f#6</span></div>
+            <div><span>g6</span></div>
+            <div class="black"><span>g#6</span></div>
+            <div><span>a6</span></div>
+            <div class="black"><span>a#6</span></div>
+            <div><span>b6</span></div>
+            <div><span>c7</span></div>
+            <div class="black"><span>c#7</span></div>
+            <div><span>d7</span></div>
+        </div>
+        <br style="clear:both"/>
+        <br style="clear:both"/>
+        <input id="whatToPlay" type="text" style="width:80%"/>
+        <br style="clear:both"/>
+        <br style="clear:both"/>
+        <input id="whatToPlay2" type="text" style="width:80%"/>
+        <br style="clear:both"/>
+        <br style="clear:both"/>
+        <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120"/>
+        <button id="playButton">Spela!</button>
+        <button id="stopButton">Stoppa!</button>
+        <br style="clear:both"/>
+        <br style="clear:both"/>
+        <button id="playCm">Cm</button>
+        <button id="playFm">Fm</button>
+        <button id="playG">G</button>
+    </div>
+</div>
+<script type="text/javascript">
+    var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+
+    var playFns = {};
+
+    function init() {
+        var loadSound = function (url, cb) {
+            var request = new XMLHttpRequest();
+            request.open('GET', url, true);
+            request.responseType = 'arraybuffer';
+
+            // Decode asynchronously
+            request.onload = function () {
+                audioCtx.decodeAudioData(request.response, function (buffer) {
+                    var play = function (speed) {
+                        var source = audioCtx.createBufferSource();
+                        source.buffer = buffer;
+                        source.playbackRate.value = speed;
+                        source.connect(audioCtx.destination);
+                        source.start();
+                    };
+                    cb(play);
+                }, function (e) {
+                    console.log(e);
+                });
+            };
+            request.send();
+        };
+
+        var keys = [];
+        document.getElementById("clav").childNodes.forEach(function (key) {
+            if (key.tagName === "DIV") {
+                keys.push(key);
+            }
+        });
+
+        var highlight = function (key) {
+            key.className += " highlighted";
+            setTimeout(function () {
+                var reg = new RegExp('(\\s|^)highlighted(\\s|$)');
+                key.className = key.className.replace(reg, ' ');
+            }, 50)
+        };
+
+        var loadKey = function (startIndex, play, names) {
+            var loadKeyInternal = function (key, fn) {
+                key.addEventListener("click", fn);
+            };
+            names.forEach(function (name, index) {
+                playFns[name] = function () {
+                    play(Math.pow(1.0295, index * 2));
+                    highlight(keys[startIndex + index]);
+                };
+                loadKeyInternal(keys[startIndex + index], playFns[name]);
+            });
+        };
+
+        function loadSounds(sounds) {
+            var idx = 0;
+            sounds.forEach(function (sound) {
+                fileName = sound.shift();
+                (function (file, index, snd) {
+                    loadSound(file, function (play) {
+                        loadKey(index, play, snd);
+                    });
+                })(fileName, idx, sound);
+                idx += sound.length;
+            });
+        }
+
+        loadSounds([
+            ["samples/c2.wav", "c2", "c#2", "d2"],
+            ["samples/dis2.wav", "d#2", "e2", "f2"],
+            ["samples/fis2.wav", "f#2", "g2", "g#2"],
+            ["samples/a2.wav", "a2", "a#2", "b2"],
+            ["samples/c3.wav", "c3", "c#3", "d3"],
+            ["samples/dis3.wav", "d#3", "e3", "f3"],
+            ["samples/fis3.wav", "f#3", "g3", "g#3"],
+            ["samples/a3.wav", "a3", "a#3", "b3"],
+            ["samples/c4.wav", "c4", "c#4", "d4"],
+            ["samples/dis4.wav", "d#4", "e4", "f4"],
+            ["samples/fis4.wav", "f#4", "g4", "g#4"],
+            ["samples/a4.wav", "a4", "a#4", "b4"],
+            ["samples/c5.wav", "c5", "c#5", "d5"],
+            ["samples/dis5.wav", "d#5", "e5", "f5"],
+            ["samples/fis5.wav", "f#5", "g5", "g#5"],
+            ["samples/a5.wav", "a5", "a#5", "b5", "c6", "c#6", "d6", "d#6", "e6", "f6"],
+            ["samples/fis6.wav", "f#6", "g6", "g#6"],
+            ["samples/a6.wav", "a6", "a#6", "b6"],
+            ["samples/c7.wav", "c7", "c#7", "d7"],
+        ]);
+    }
+
+    init();
+
+    var loop = false;
+
+    function playIt(inputId) {
+
+        var q = false;
+
+        function a(data) {
+            if (!loop) return;
+            time = 1000 / (document.getElementById("tempo").value / 60);
+            if (data.length > 0) {
+                if (data[0] === 'q') {
+                    q = !q;
+                } else if (data[0] === 's') {
+                    loop = false;
+                } else if (data[0] !== "r") {
+                    data[0].split(",").forEach(function (d) {
+                        if (loop) {
+                            try {
+                                playFns[d]();
+                            } catch (err) {
+                            }
+                        }
+                    });
+                }
+                setTimeout(function () {
+                    a(data.slice(1));
+                }, data[0] === 'q' ? 0 : (q ? time / 2 : time));
+            } else {
+                a(document.getElementById(inputId).value.split(" "));
+            }
+        }
+
+        a(document.getElementById(inputId).value.split(" "));
+
+
+    }
+
+
+    document.getElementById("playButton").addEventListener("click", function (e) {
+        loop = true;
+        playIt("whatToPlay");
+        playIt("whatToPlay2");
+    });
+    document.getElementById("stopButton").addEventListener("click", function (e) {
+        loop = false;
+    })
+    document.getElementById("playCm").addEventListener("click", function (e) {
+        document.getElementById("whatToPlay").value = "c3 c4 d#4 g4";
+    })
+    document.getElementById("playFm").addEventListener("click", function (e) {
+        document.getElementById("whatToPlay").value = "c3 c4 f4 g#4";
+    })
+    document.getElementById("playG").addEventListener("click", function (e) {
+        document.getElementById("whatToPlay").value = "g3 b3 d4 g4";
+    })
+
+</script>
+</body>
+</html>
