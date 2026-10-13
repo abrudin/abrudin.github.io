@@ -228,6 +228,12 @@
         </div>
         <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its 4/4 bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
         <p>Sequence format: separate quarter notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). q toggles eighth-note mode on/off: q c4 d4 q e4 plays two eighth notes, then a quarter note. Rests also become eighth notes while q is on. Each repeat starts in quarter-note mode. s stops playback. Starting playback from the beginning pads the shorter line with rests so both repeat together.</p>
+        <div class="keyboard-controls">
+            <button id="saveTracks" type="button">Save tracks (.abr)</button>
+            <button id="loadTracks" type="button">Load tracks (.abr)</button>
+            <input id="trackFile" type="file" accept=".abr,text/plain" hidden/>
+            <p id="trackFileStatus" role="status">Save downloads both tracks. Load opens a file from your device and replaces both tracks.</p>
+        </div>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120" required/>
@@ -920,6 +926,77 @@
         finishRecording(false);
         document.getElementById("whatToPlay").value = "g3 b3 d4 g4";
     })
+
+    function serializeTracks(upper, lower) {
+        return "ABR 1\n\n[upper]\n" + upper.trim() + "\n\n[lower]\n" + lower.trim() + "\n";
+    }
+
+    function parseTracks(text) {
+        var lines = text.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").split("\n");
+        if (lines.shift().trim() !== "ABR 1") throw new Error("Expected an ABR 1 file.");
+        var sections = {};
+        var section = null;
+        lines.forEach(function (line) {
+            var trimmed = line.trim();
+            if (/^\[.*\]$/.test(trimmed)) {
+                if (trimmed !== "[upper]" && trimmed !== "[lower]") throw new Error("Unknown track section: " + trimmed);
+                section = trimmed.slice(1, -1);
+                if (sections[section]) throw new Error("Duplicate " + section + " section.");
+                sections[section] = [];
+            } else if (section) sections[section].push(line);
+            else if (trimmed) throw new Error("Track content must be inside [upper] or [lower].");
+        });
+        if (!sections.upper || !sections.lower) throw new Error("The file needs both [upper] and [lower] sections.");
+        var tracks = { upper: sections.upper.join("\n").trim(), lower: sections.lower.join("\n").trim() };
+        [tracks.upper, tracks.lower].forEach(function (track) {
+            if (!track) return;
+            track.split(/\s+/).forEach(function (token) {
+                if (token === "q" || token === "r" || token === "s") return;
+                token.split(",").forEach(function (note) {
+                    var match = /^([a-g]#?)([1-8])$/.exec(note);
+                    var names = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+                    var index = match ? names.indexOf(match[1]) : -1;
+                    if (index === -1 || !noteForPianoIndex((Number(match[2]) - 2) * 12 + index)) throw new Error("Invalid or out-of-range note: " + note);
+                });
+            });
+        });
+        return tracks;
+    }
+
+    document.getElementById("saveTracks").addEventListener("click", function () {
+        finishRecording(false);
+        var text = serializeTracks(document.getElementById("whatToPlay").value, document.getElementById("whatToPlay2").value);
+        var url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = "piano-tracks.abr";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+        document.getElementById("trackFileStatus").textContent = "Downloaded piano-tracks.abr. The file contains the upper and lower tracks; tempo and other settings are not included.";
+    });
+
+    document.getElementById("loadTracks").addEventListener("click", function () {
+        document.getElementById("trackFile").click();
+    });
+    document.getElementById("trackFile").addEventListener("change", async function (event) {
+        var file = event.target.files[0];
+        if (!file) return;
+        try {
+            var tracks = parseTracks(await file.text());
+            finishRecording(true);
+            stopPlayback();
+            setMetronomeEnabled(false);
+            document.getElementById("whatToPlay").value = tracks.upper;
+            document.getElementById("whatToPlay2").value = tracks.lower;
+            document.getElementById("trackFileStatus").textContent = "Loaded " + file.name + ". Both tracks replaced.";
+        } catch (error) {
+            document.getElementById("trackFileStatus").textContent = "Could not load file: " + error.message;
+        } finally {
+            event.target.value = "";
+        }
+    });
 
 </script>
 </body>
