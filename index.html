@@ -224,9 +224,15 @@
             <button id="resetBottom" type="button">Reset</button>
         </div>
         <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its 4/4 bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
+        <p>Sequence format: separate quarter notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). q toggles eighth-note mode on/off: q c4 d4 q e4 plays two eighth notes, then a quarter note. Rests also become eighth notes while q is on. Each repeat starts in quarter-note mode. s stops playback. Starting playback from the beginning pads the shorter line with rests so both repeat together.</p>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120" required/>
+        <label for="recordGrid">Recording grid:</label>
+        <select id="recordGrid">
+            <option value="4">Quarter notes</option>
+            <option value="8" selected>Eighth notes (q)</option>
+        </select>
         <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
         <span>4/4 · accented first beat · M toggles while keyboard is grabbed</span>
         <button id="playButton" type="button">Play</button>
@@ -447,7 +453,8 @@
         for (var i = 0; i < count; i++) {
             slots.push(recording.slots[i] ? recording.slots[i].join(",") : "r");
         }
-        return slots.join(" ");
+        var text = slots.join(" ");
+        return recording.slotsPerBar === 8 ? "q " + text + " q" : text;
     }
 
     function refreshRecording() {
@@ -458,7 +465,8 @@
             return;
         }
         var beat = Math.max(0, Math.floor((performance.now() - recording.startedAt) / recording.beatMs));
-        recording.input.value = recordingText(beat + 1);
+        var slot = Math.max(0, Math.floor((performance.now() - recording.startedAt) / recording.slotMs));
+        recording.input.value = recordingText(slot + 1);
         document.getElementById("recordingStatus").textContent = "Recording " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + (beat + 1) + ". Press " + recording.shortcut + " to stop, or Escape to cancel and restore.";
     }
 
@@ -466,11 +474,12 @@
         if (!recording) return;
         clearInterval(recording.timer);
         var started = recording.startedAt !== null;
-        var slotCount = started ? Math.ceil((performance.now() - recording.startedAt) / recording.beatMs) : 0;
+        var slotCount = started ? Math.ceil((performance.now() - recording.startedAt) / recording.slotMs) : 0;
         // Complete the last 4/4 bar, including any note snapped to a later slot.
-        if (started) slotCount = Math.ceil(Math.max(1, slotCount, recording.slots.length) / 4) * 4;
+        if (started) slotCount = Math.ceil(Math.max(1, slotCount, recording.slots.length) / recording.slotsPerBar) * recording.slotsPerBar;
         recording.input.value = cancel || !started ? recording.previousValue : recordingText(slotCount);
         recording.input.readOnly = recording.previousReadOnly;
+        stopPlayback();
         document.getElementById("recordingStatus").textContent = cancel ? "Recording cancelled; previous " + recording.lineName + " restored." : (started ? "Recording saved to " + recording.lineName + "." : "No notes recorded; " + recording.lineName + " kept.");
         recording = null;
         setMetronomeEnabled(false);
@@ -489,6 +498,7 @@
         }
         stopPlayback();
         var input = document.getElementById(inputId);
+        var slotsPerBar = Number(document.getElementById("recordGrid").value);
         recording = {
             input: input,
             previousValue: input.value,
@@ -497,6 +507,8 @@
             shortcut: inputId === "whatToPlay" ? "V" : "B",
             tempo: tempo,
             beatMs: 60000 / tempo,
+            slotsPerBar: slotsPerBar,
+            slotMs: 60000 / tempo * 4 / slotsPerBar,
             armedAt: performance.now(),
             startedAt: null,
             slots: []
@@ -505,16 +517,17 @@
         document.getElementById(inputId === "whatToPlay" ? "recordTop" : "recordBottom").textContent = "Stop recording (" + recording.shortcut + ")";
         recording.timer = setInterval(refreshRecording, 100);
         setMetronomeEnabled(true);
+        startAccompaniment(inputId === "whatToPlay" ? "whatToPlay2" : "whatToPlay");
         refreshRecording();
     }
 
     function recordNote(name) {
         if (!recording) return;
         if (recording.startedAt === null) {
-            var firstBeat = Math.round((performance.now() - recording.armedAt) / recording.beatMs);
-            recording.startedAt = recording.armedAt + Math.floor(firstBeat / 4) * 4 * recording.beatMs;
+            var firstSlot = Math.round((performance.now() - recording.armedAt) / recording.slotMs);
+            recording.startedAt = recording.armedAt + Math.floor(firstSlot / recording.slotsPerBar) * recording.slotsPerBar * recording.slotMs;
         }
-        var slot = Math.round((performance.now() - recording.startedAt) / recording.beatMs);
+        var slot = Math.round((performance.now() - recording.startedAt) / recording.slotMs);
         if (!recording.slots[slot]) recording.slots[slot] = [];
         if (recording.slots[slot].indexOf(name) === -1) recording.slots[slot].push(name);
         refreshRecording();
@@ -581,7 +594,7 @@
         updateSplitKeyOptions();
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
-        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line in quarter notes at the starting tempo. Escape cancels recording and releases the keyboard.";
+        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line using the selected recording grid and starting tempo. Escape cancels recording and releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
             var key = keyboardPianoKey(index);
             if (!key) return;
@@ -612,6 +625,7 @@
 
     keyboardOctave.addEventListener("change", keyboardSelectionChanged);
     keyboardLayout.addEventListener("change", keyboardSelectionChanged);
+    document.getElementById("recordGrid").addEventListener("change", keyboardSelectionChanged);
     splitKeyboard.addEventListener("change", function (event) {
         document.getElementById("splitKeyboardSettings").hidden = !splitKeyboard.checked;
         keyboardSelectionChanged(event);
@@ -695,13 +709,46 @@
     var loop = false;
     var playbackTracks = null;
 
-    function queuePlayback(track, delay) {
+    function alignSequenceLoops() {
+        var sequences = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
+            var input = document.getElementById(inputId);
+            var text = input.value.trim();
+            var tokens = text ? text.split(/\s+/) : [];
+            var halfBeat = false;
+            var length = 0;
+            tokens.forEach(function (token) {
+                if (token === "q") halfBeat = !halfBeat;
+                else if (token !== "s") length += halfBeat ? 1 : 2;
+            });
+            return { input: input, tokens: tokens, length: length, halfBeat: halfBeat };
+        });
+        // An explicit stop ends playback instead of repeating.
+        if (sequences.some(function (sequence) { return sequence.tokens.indexOf("s") !== -1; })) return;
+        var length = Math.max(sequences[0].length, sequences[1].length);
+        if (!length) return;
+        sequences.forEach(function (sequence) {
+            if (sequence.halfBeat) sequence.tokens.push("q");
+            var missing = length - sequence.length;
+            for (var i = 0; i < Math.floor(missing / 2); i++) sequence.tokens.push("r");
+            if (missing % 2) sequence.tokens.push("q", "r", "q");
+            sequence.input.value = sequence.tokens.join(" ");
+        });
+    }
+
+    function queuePlayback(track, delay, deadline) {
         track.remaining = delay;
-        track.dueAt = performance.now() + delay;
+        track.dueAt = deadline === undefined ? performance.now() + delay : deadline;
         track.timer = setTimeout(function () {
             track.timer = null;
             advancePlayback(track);
-        }, delay);
+        }, Math.max(0, track.dueAt - performance.now()));
+    }
+
+    function startAccompaniment(inputId) {
+        var track = { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: recording.beatMs, timer: null, remaining: 0, dueAt: recording.armedAt, done: false };
+        playbackTracks = [track];
+        loop = true;
+        advancePlayback(track);
     }
 
     function advancePlayback(track) {
@@ -713,6 +760,7 @@
                 var text = document.getElementById(track.inputId).value.trim();
                 track.tokens = text ? text.split(/\s+/) : [];
                 track.index = 0;
+                track.halfBeat = false;
             }
             if (!track.tokens.length || controlsRead >= track.tokens.length) {
                 track.done = true;
@@ -732,9 +780,10 @@
             if (token !== "r") token.split(",").forEach(function (name) {
                 if (playFns[name]) playbackSources.add(playFns[name]());
             });
-            var tempo = Number(document.getElementById("tempo").value);
+            var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
             if (Number.isFinite(tempo) && tempo >= 30 && tempo <= 4000) track.beatMs = 60000 / tempo;
-            queuePlayback(track, track.halfBeat ? track.beatMs / 2 : track.beatMs);
+            var duration = track.halfBeat ? track.beatMs / 2 : track.beatMs;
+            queuePlayback(track, duration, track.dueAt + duration);
             return;
         }
     }
@@ -759,14 +808,16 @@
     }
 
     document.getElementById("playButton").addEventListener("click", function (e) {
-        if (loop) return;
+        if (loop && !recording) return;
         if (!document.getElementById("tempo").reportValidity()) return;
         finishRecording(false);
         if (audioCtx.state === "suspended") audioCtx.resume();
         restartMetronome();
         if (!playbackTracks || playbackTracks.every(function (track) { return track.done; })) {
+            alignSequenceLoops();
+            var startedAt = performance.now();
             playbackTracks = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
-                return { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, done: false };
+                return { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, dueAt: startedAt, done: false };
             });
         }
         loop = true;
