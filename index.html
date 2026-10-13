@@ -88,7 +88,7 @@
                 <option value="4" selected>4</option>
                 <option value="5">5</option>
             </select>
-            <p id="keyboardHelp">Grab keyboard to play A W S E D F T G Y H U J K O L P ;. Escape releases the keyboard.</p>
+            <p id="keyboardHelp">Grab keyboard to play A W S E D F T G Y H U J K O L P ;. Z lowers the octave; X raises it. Escape releases the keyboard.</p>
         </div>
         <div id="clav">
             <div><span>c2</span></div>
@@ -318,6 +318,16 @@
         // Keep browser shortcuts and form controls usable while grabbed.
         if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing ||
             event.target.closest("input, textarea, select, [contenteditable]")) return;
+        if (event.code === "KeyZ" || event.code === "KeyX") {
+            event.preventDefault();
+            if (event.repeat) return;
+            var octaveIndex = keyboardOctave.selectedIndex + (event.code === "KeyZ" ? -1 : 1);
+            if (octaveIndex >= 0 && octaveIndex < keyboardOctave.options.length) {
+                keyboardOctave.selectedIndex = octaveIndex;
+                updateKeyboardLabels();
+            }
+            return;
+        }
         var index = keyboardCodes.indexOf(event.code);
         if (index === -1) return;
         event.preventDefault();
