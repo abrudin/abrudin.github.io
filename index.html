@@ -173,7 +173,7 @@
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120"/>
         <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
-        <span>4/4 · accented first beat</span>
+        <span>4/4 · accented first beat · M toggles while keyboard is grabbed</span>
         <button id="playButton">Spela!</button>
         <button id="stopButton">Stoppa!</button>
         <br style="clear:both"/>
@@ -288,9 +288,13 @@
     // Physical key positions also work for Swedish dead keys (such as ¨).
     var keyboardCodes = ["KeyA", "KeyW", "KeyS", "KeyE", "KeyD", "KeyF", "KeyT", "KeyG", "KeyY", "KeyH", "KeyU", "KeyJ", "KeyK", "KeyO", "KeyL", "KeyP", "Semicolon", "Quote", "BracketLeft", "BracketRight", "Backslash"];
     var swedishKeyboardCodes = keyboardCodes.slice(0, -2).concat(["Backslash", "BracketRight"]);
+    var keyboardNoteOffsets = keyboardCodes.map(function (code, index) { return index; });
+    keyboardCodes.push("KeyQ");
+    swedishKeyboardCodes.push("KeyQ");
+    keyboardNoteOffsets.push(-2); // B-flat below the C played by A; B is unmapped.
     var keyboardLayouts = {
-        english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\"],
-        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "'", "¨"]
+        english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\", "Q"],
+        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "'", "¨", "Q"]
     };
     var pianoKeys = Array.from(document.querySelectorAll("#clav > div"));
     var keyboardToggle = document.getElementById("keyboardToggle");
@@ -465,10 +469,12 @@
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
         document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line in quarter notes at the starting tempo. Escape cancels recording and releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
+            var key = pianoKeys[start + keyboardNoteOffsets[index]];
+            if (!key) return;
             var label = document.createElement("span");
             label.className = "keyboard-label";
             label.textContent = text;
-            pianoKeys[start + index].appendChild(label);
+            key.appendChild(label);
         });
     }
 
@@ -505,6 +511,11 @@
         // Keep browser shortcuts and form controls usable while grabbed.
         if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing ||
             event.target.closest("input, textarea, select, [contenteditable]")) return;
+        if (event.code === "KeyM") {
+            event.preventDefault();
+            if (!event.repeat) document.getElementById("metronomeToggle").click();
+            return;
+        }
         if (event.code === "KeyV" || event.code === "KeyB") {
             event.preventDefault();
             if (!event.repeat) toggleRecording(event.code === "KeyV" ? "whatToPlay" : "whatToPlay2");
@@ -533,7 +544,8 @@
         if (index === -1) return;
         event.preventDefault();
         if (event.repeat || heldKeys.has(event.code)) return;
-        var key = pianoKeys[(effectiveKeyboardOctave() - 2) * 12 + index];
+        var key = pianoKeys[(effectiveKeyboardOctave() - 2) * 12 + keyboardNoteOffsets[index]];
+        if (!key) return;
         var play = playFns[key.querySelector("span").textContent];
         if (!play) return;
         if (audioCtx.state === "suspended") audioCtx.resume();
