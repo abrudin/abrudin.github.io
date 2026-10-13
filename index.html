@@ -246,6 +246,12 @@
         <button id="playCm">Cm</button>
         <button id="playFm">Fm</button>
         <button id="playG">G</button>
+        <div class="keyboard-controls">
+            <label for="sustain">Sustain / reverb:</label>
+            <input id="sustain" type="range" min="0" max="100" value="50" aria-describedby="sustainHelp"/>
+            <output id="sustainValue" for="sustain">Original sound</output>
+            <p id="sustainHelp">Middle: original sound. Left: shorter notes. Right: added reverb. Note-length changes apply to new notes.</p>
+        </div>
     </div>
 </div>
 <script type="text/javascript">
@@ -254,6 +260,37 @@
 
     var playFns = {};
     var playbackSources = new Set();
+    var sustainControl = document.getElementById("sustain");
+    var reverb = null;
+    var reverbLevel = null;
+
+    function updateSustain() {
+        var value = Number(sustainControl.value);
+        document.getElementById("sustainValue").textContent = value === 50 ? "Original sound" : (value < 50 ? "Shorter notes: " + (100 - value * 2) + "%" : "Added reverb: " + ((value - 50) * 2) + "%");
+        if (value > 50 && !reverb) {
+            // A fading stereo noise impulse adds a six-second reverb tail.
+            var length = Math.ceil(audioCtx.sampleRate * 6);
+            var impulse = audioCtx.createBuffer(2, length, audioCtx.sampleRate);
+            for (var channel = 0; channel < 2; channel++) {
+                var data = impulse.getChannelData(channel);
+                for (var i = 0; i < length; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3);
+                }
+            }
+            reverb = audioCtx.createConvolver();
+            reverb.buffer = impulse;
+            reverbLevel = audioCtx.createGain();
+            reverbLevel.gain.value = 0;
+            reverb.connect(reverbLevel);
+            reverbLevel.connect(audioCtx.destination);
+        }
+        if (reverbLevel) reverbLevel.gain.setTargetAtTime(Math.max(0, (value - 50) / 50) * 0.4, audioCtx.currentTime, 0.03);
+    }
+
+    sustainControl.addEventListener("input", updateSustain);
+    sustainControl.addEventListener("change", function () {
+        if (keyboardGrabbed) sustainControl.blur();
+    });
 
     function noteForPianoIndex(index) {
         if (index < -12 || index > 74) return null;
@@ -278,12 +315,23 @@
                         gain.gain.value = volume;
                         source.connect(gain);
                         gain.connect(audioCtx.destination);
+                        var sustain = Number(sustainControl.value);
+                        if (sustain > 50 && reverb) gain.connect(reverb);
+                        if (sustain < 50) {
+                            var now = audioCtx.currentTime;
+                            var naturalDuration = buffer.duration / speed;
+                            var duration = Math.min(naturalDuration, 0.15 + (naturalDuration - 0.15) * Math.pow(sustain / 50, 2));
+                            gain.gain.setValueAtTime(volume, now);
+                            gain.gain.setValueAtTime(volume, now + Math.max(0, duration - Math.min(0.3, duration * 0.8)));
+                            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+                        }
                         source.onended = function () {
                             playbackSources.delete(source);
                             source.disconnect();
                             gain.disconnect();
                         };
                         source.start();
+                        if (sustain < 50) source.stop(now + duration);
                         return source;
                     };
                     cb(play);
