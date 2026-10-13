@@ -81,6 +81,11 @@
     <div class="pianoholder">
         <div class="keyboard-controls">
             <button id="keyboardToggle" type="button" aria-pressed="false">Grab keyboard</button>
+            <label for="keyboardLayout">Keyboard layout:</label>
+            <select id="keyboardLayout">
+                <option value="english" selected>English (US)</option>
+                <option value="swedish">Swedish</option>
+            </select>
             <label for="keyboardOctave">Keyboard octave:</label>
             <select id="keyboardOctave">
                 <option value="2">2</option>
@@ -88,7 +93,7 @@
                 <option value="4" selected>4</option>
                 <option value="5">5</option>
             </select>
-            <p id="keyboardHelp">Grab keyboard to play A W S E D F T G Y H U J K O L P ;. Z lowers the octave; X raises it. Escape releases the keyboard.</p>
+            <p id="keyboardHelp"></p>
         </div>
         <div id="clav">
             <div><span>c2</span></div>
@@ -271,11 +276,16 @@
 
     var keyboardGrabbed = false;
     var heldKeys = new Map();
-    var keyboardCodes = ["KeyA", "KeyW", "KeyS", "KeyE", "KeyD", "KeyF", "KeyT", "KeyG", "KeyY", "KeyH", "KeyU", "KeyJ", "KeyK", "KeyO", "KeyL", "KeyP", "Semicolon"];
-    var keyboardLabels = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";"];
+    // Physical key positions also work for Swedish dead keys (such as ¨).
+    var keyboardCodes = ["KeyA", "KeyW", "KeyS", "KeyE", "KeyD", "KeyF", "KeyT", "KeyG", "KeyY", "KeyH", "KeyU", "KeyJ", "KeyK", "KeyO", "KeyL", "KeyP", "Semicolon", "Quote", "BracketLeft", "BracketRight", "Backslash"];
+    var keyboardLayouts = {
+        english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\"],
+        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "¨", "'"]
+    };
     var pianoKeys = Array.from(document.querySelectorAll("#clav > div"));
     var keyboardToggle = document.getElementById("keyboardToggle");
     var keyboardOctave = document.getElementById("keyboardOctave");
+    var keyboardLayout = document.getElementById("keyboardLayout");
 
     function releaseKeyboardNotes() {
         heldKeys.forEach(function (key) { key.classList.remove("held"); });
@@ -286,6 +296,8 @@
         releaseKeyboardNotes();
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
         var start = (Number(keyboardOctave.value) - 2) * 12;
+        var keyboardLabels = keyboardLayouts[keyboardLayout.value];
+        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Escape releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
             var label = document.createElement("span");
             label.className = "keyboard-label";
@@ -306,6 +318,7 @@
         setKeyboardGrabbed(!keyboardGrabbed);
     });
     keyboardOctave.addEventListener("change", updateKeyboardLabels);
+    keyboardLayout.addEventListener("change", updateKeyboardLabels);
     updateKeyboardLabels();
 
     document.addEventListener("keydown", function (event) {
