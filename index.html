@@ -517,12 +517,12 @@
         document.getElementById(inputId === "whatToPlay" ? "recordTop" : "recordBottom").textContent = "Stop recording (" + recording.shortcut + ")";
         recording.timer = setInterval(refreshRecording, 100);
         setMetronomeEnabled(true);
-        startAccompaniment(inputId === "whatToPlay" ? "whatToPlay2" : "whatToPlay");
         refreshRecording();
     }
 
     function recordNote(name) {
         if (!recording) return;
+        var firstNote = recording.startedAt === null;
         if (recording.startedAt === null) {
             var firstSlot = Math.round((performance.now() - recording.armedAt) / recording.slotMs);
             recording.startedAt = recording.armedAt + Math.floor(firstSlot / recording.slotsPerBar) * recording.slotsPerBar * recording.slotMs;
@@ -530,6 +530,7 @@
         var slot = Math.round((performance.now() - recording.startedAt) / recording.slotMs);
         if (!recording.slots[slot]) recording.slots[slot] = [];
         if (recording.slots[slot].indexOf(name) === -1) recording.slots[slot].push(name);
+        if (firstNote) startAccompaniment(recording.input.id === "whatToPlay" ? "whatToPlay2" : "whatToPlay", recording.startedAt + slot * recording.slotMs);
         refreshRecording();
     }
 
@@ -744,15 +745,17 @@
         }, Math.max(0, track.dueAt - performance.now()));
     }
 
-    function startAccompaniment(inputId) {
-        var track = { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: recording.beatMs, timer: null, remaining: 0, dueAt: recording.armedAt, done: false };
+    function startAccompaniment(inputId, firstNoteAt) {
+        var track = { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: recording.beatMs, timer: null, remaining: 0, dueAt: recording.startedAt, seekOrigin: recording.startedAt, seekUntil: firstNoteAt, done: false };
         playbackTracks = [track];
         loop = true;
-        advancePlayback(track);
+        if (firstNoteAt > performance.now()) queuePlayback(track, firstNoteAt - performance.now(), firstNoteAt);
+        else advancePlayback(track);
     }
 
     function advancePlayback(track) {
         if (!loop || track.done) return;
+        if (track.seekUntil !== undefined) track.dueAt = track.seekOrigin;
         // q toggles eighth notes; skip control tokens without consuming a beat.
         var controlsRead = 0;
         while (loop) {
@@ -777,12 +780,18 @@
                 stopPlayback();
                 return;
             }
-            if (token !== "r") token.split(",").forEach(function (name) {
-                if (playFns[name]) playbackSources.add(playFns[name]());
-            });
             var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
             if (Number.isFinite(tempo) && tempo >= 30 && tempo <= 4000) track.beatMs = 60000 / tempo;
             var duration = track.halfBeat ? track.beatMs / 2 : track.beatMs;
+            if (track.seekUntil !== undefined && track.dueAt + duration <= track.seekUntil) {
+                track.dueAt += duration;
+                controlsRead = 0;
+                continue;
+            }
+            delete track.seekUntil;
+            if (token !== "r") token.split(",").forEach(function (name) {
+                if (playFns[name]) playbackSources.add(playFns[name]());
+            });
             queuePlayback(track, duration, track.dueAt + duration);
             return;
         }
