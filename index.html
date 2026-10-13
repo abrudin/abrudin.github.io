@@ -927,8 +927,8 @@
         document.getElementById("whatToPlay").value = "g3 b3 d4 g4";
     })
 
-    function serializeTracks(upper, lower) {
-        return "ABR 1\n\n[upper]\n" + upper.trim() + "\n\n[lower]\n" + lower.trim() + "\n";
+    function serializeTracks(upper, lower, tempo) {
+        return "ABR 1\ntempo: " + tempo + "\n\n[upper]\n" + upper.trim() + "\n\n[lower]\n" + lower.trim() + "\n";
     }
 
     function parseTracks(text) {
@@ -936,6 +936,7 @@
         if (lines.shift().trim() !== "ABR 1") throw new Error("Expected an ABR 1 file.");
         var sections = {};
         var section = null;
+        var tempo = null;
         lines.forEach(function (line) {
             var trimmed = line.trim();
             if (/^\[.*\]$/.test(trimmed)) {
@@ -943,11 +944,16 @@
                 section = trimmed.slice(1, -1);
                 if (sections[section]) throw new Error("Duplicate " + section + " section.");
                 sections[section] = [];
+            } else if (!section && trimmed.startsWith("tempo:")) {
+                if (tempo !== null) throw new Error("Duplicate tempo field.");
+                var value = trimmed.slice(6).trim();
+                tempo = Number(value);
+                if (!/^\d+(\.\d+)?$/.test(value) || !Number.isFinite(tempo) || tempo < 30 || tempo > 4000) throw new Error("Tempo must be between 30 and 4000 BPM.");
             } else if (section) sections[section].push(line);
             else if (trimmed) throw new Error("Track content must be inside [upper] or [lower].");
         });
         if (!sections.upper || !sections.lower) throw new Error("The file needs both [upper] and [lower] sections.");
-        var tracks = { upper: sections.upper.join("\n").trim(), lower: sections.lower.join("\n").trim() };
+        var tracks = { upper: sections.upper.join("\n").trim(), lower: sections.lower.join("\n").trim(), tempo: tempo };
         [tracks.upper, tracks.lower].forEach(function (track) {
             if (!track) return;
             track.split(/\s+/).forEach(function (token) {
@@ -964,8 +970,9 @@
     }
 
     document.getElementById("saveTracks").addEventListener("click", function () {
+        if (!document.getElementById("tempo").reportValidity()) return;
         finishRecording(false);
-        var text = serializeTracks(document.getElementById("whatToPlay").value, document.getElementById("whatToPlay2").value);
+        var text = serializeTracks(document.getElementById("whatToPlay").value, document.getElementById("whatToPlay2").value, Number(document.getElementById("tempo").value));
         var url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
         var link = document.createElement("a");
         link.href = url;
@@ -974,7 +981,7 @@
         link.click();
         link.remove();
         setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-        document.getElementById("trackFileStatus").textContent = "Downloaded piano-tracks.abr. The file contains the upper and lower tracks; tempo and other settings are not included.";
+        document.getElementById("trackFileStatus").textContent = "Downloaded piano-tracks.abr with both tracks and tempo.";
     });
 
     document.getElementById("loadTracks").addEventListener("click", function () {
@@ -990,7 +997,8 @@
             setMetronomeEnabled(false);
             document.getElementById("whatToPlay").value = tracks.upper;
             document.getElementById("whatToPlay2").value = tracks.lower;
-            document.getElementById("trackFileStatus").textContent = "Loaded " + file.name + ". Both tracks replaced.";
+            if (tracks.tempo !== null) document.getElementById("tempo").value = tracks.tempo;
+            document.getElementById("trackFileStatus").textContent = "Loaded " + file.name + ". Both tracks replaced. " + (tracks.tempo !== null ? "Tempo set to " + tracks.tempo + " BPM." : "No tempo in file; current tempo kept.");
         } catch (error) {
             document.getElementById("trackFileStatus").textContent = "Could not load file: " + error.message;
         } finally {

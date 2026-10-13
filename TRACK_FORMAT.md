@@ -4,6 +4,7 @@
 
 ```text
 ABR 1
+tempo: 120
 
 [upper]
 q c5 e5 g5 e5 q
@@ -14,6 +15,6 @@ c3,e3,g3 r
 
 Track tokens are separated by whitespace. Notes use lowercase names from `c1` through `d8`, with `#` for sharps. Commas join notes into chords. `r` is a rest, `q` toggles eighth-note mode, and `s` stops playback. Each playback loop begins in quarter-note mode.
 
-Files contain only the two tracks. Tempo, keyboard layout, split, recording grid, and sustain/reverb remain application settings and are not saved or changed when loading.
+Files contain both tracks and the default playback tempo in BPM. The optional `tempo: 120` field goes before the track sections and must be between 30 and 4000. Save includes the current tempo; Load applies the file's tempo. Older files without this field keep the current tempo. Keyboard layout, split, recording grid, and sustain/reverb are not saved or changed when loading.
 
-Save downloads `piano-tracks.abr`. Load reads a local file, validates both tracks, then replaces both textareas and stops recording, playback, and the metronome. Invalid files leave the tracks untouched. No file is sent to a server.
+Save downloads `piano-tracks.abr`. Load reads a local file, validates both tracks and tempo, then replaces both textareas and stops recording, playback, and the metronome. Invalid files leave the tracks and tempo untouched. No file is sent to a server.
