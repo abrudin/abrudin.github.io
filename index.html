@@ -93,6 +93,14 @@
                 <option value="4" selected>4</option>
                 <option value="5">5</option>
             </select>
+            <label><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
+            <span id="splitKeyboardSettings" hidden>
+                <label for="splitKey">First key in upper half:</label>
+                <select id="splitKey"></select>
+                <label for="splitOctaves">Lower half: octaves down</label>
+                <input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required style="width:3em"/>
+                <span>Keys below the piano's range are silent.</span>
+            </span>
             <p id="keyboardHelp"></p>
         </div>
         <div id="clav">
@@ -312,6 +320,9 @@
     var keyboardToggle = document.getElementById("keyboardToggle");
     var keyboardOctave = document.getElementById("keyboardOctave");
     var keyboardLayout = document.getElementById("keyboardLayout");
+    var splitKeyboard = document.getElementById("splitKeyboard");
+    var splitKey = document.getElementById("splitKey");
+    var splitOctaves = document.getElementById("splitOctaves");
     var recording = null;
     var metronomeEnabled = false;
     var metronomeTimer = null;
@@ -474,14 +485,44 @@
         return Math.max(2, Math.min(5, Number(keyboardOctave.value) + offset));
     }
 
+    function keyboardPianoKey(index) {
+        var offset = keyboardNoteOffsets[index];
+        if (splitKeyboard.checked) {
+            var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
+            var splitIndex = codes.indexOf(splitKey.value);
+            var octaves = Number(splitOctaves.value);
+            if (splitIndex !== -1 && offset < keyboardNoteOffsets[splitIndex] &&
+                Number.isInteger(octaves) && octaves >= 0 && octaves <= 4) {
+                offset -= octaves * 12;
+            }
+        }
+        return pianoKeys[(effectiveKeyboardOctave() - 2) * 12 + offset];
+    }
+
+    function updateSplitKeyOptions() {
+        var selected = splitKey.value || "KeyK";
+        var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
+        var labels = keyboardLayouts[keyboardLayout.value];
+        splitKey.textContent = "";
+        codes.map(function (code, index) { return index; }).sort(function (a, b) {
+            return keyboardNoteOffsets[a] - keyboardNoteOffsets[b];
+        }).forEach(function (index) {
+            var option = document.createElement("option");
+            option.value = codes[index];
+            option.textContent = labels[index];
+            splitKey.appendChild(option);
+        });
+        splitKey.value = selected;
+    }
+
     function updateKeyboardLabels(preserveHeldNotes) {
         if (preserveHeldNotes !== true) releaseKeyboardNotes();
+        updateSplitKeyOptions();
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
-        var start = (effectiveKeyboardOctave() - 2) * 12;
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
         document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line in quarter notes at the starting tempo. Escape cancels recording and releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
-            var key = pianoKeys[start + keyboardNoteOffsets[index]];
+            var key = keyboardPianoKey(index);
             if (!key) return;
             var label = document.createElement("span");
             label.className = "keyboard-label";
@@ -510,6 +551,12 @@
 
     keyboardOctave.addEventListener("change", keyboardSelectionChanged);
     keyboardLayout.addEventListener("change", keyboardSelectionChanged);
+    splitKeyboard.addEventListener("change", function (event) {
+        document.getElementById("splitKeyboardSettings").hidden = !splitKeyboard.checked;
+        keyboardSelectionChanged(event);
+    });
+    splitKey.addEventListener("change", keyboardSelectionChanged);
+    splitOctaves.addEventListener("change", keyboardSelectionChanged);
     updateKeyboardLabels();
 
     document.addEventListener("keydown", function (event) {
@@ -556,7 +603,7 @@
         if (index === -1) return;
         event.preventDefault();
         if (event.repeat || heldKeys.has(event.code)) return;
-        var key = pianoKeys[(effectiveKeyboardOctave() - 2) * 12 + keyboardNoteOffsets[index]];
+        var key = keyboardPianoKey(index);
         if (!key) return;
         var play = playFns[key.querySelector("span").textContent];
         if (!play) return;
