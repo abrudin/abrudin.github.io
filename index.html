@@ -25,7 +25,7 @@
                 <button id="keyboardToggle" class="button-primary" type="button" aria-pressed="false">Grab keyboard</button>
                 <div class="field"><label for="keyboardLayout">Keyboard layout</label><select id="keyboardLayout"><option value="english" selected>English (US)</option><option value="swedish">Swedish</option></select></div>
                 <div class="field octave-field"><label for="keyboardOctave">Octave</label><select id="keyboardOctave"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
-                <label class="checkbox-label"><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
+                <label id="splitKeyboardToggle" class="checkbox-label" hidden><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
                 <span id="splitKeyboardSettings" class="split-settings" hidden>
                     <span class="field"><label for="splitKey">First key in upper half</label><select id="splitKey"></select></span>
                     <span class="field"><label for="splitOctaves">Lower half: octaves down</label><input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required/></span>
@@ -111,7 +111,7 @@
                 <div class="track-card"><div class="track-heading"><label for="whatToPlay2"><span class="track-number">02</span> Lower track</label><div class="track-actions"><button id="recordBottom" class="record-button" type="button">Record bottom (B)</button><button id="resetBottom" class="quiet-button" type="button">Reset</button></div></div><div class="score-row"><textarea id="whatToPlay2" rows="6" aria-label="Bottom sequence" placeholder="Give it a little accompaniment…" spellcheck="false"></textarea></div></div>
             </div>
             <p id="recordingStatus" class="help-text status-line" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
-            <div class="composition-footer"><p class="help-text">Separate notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). Starting playback from the beginning pads the shorter line with rests so both finish together.</p><div class="chord-presets"><span>Start with a chord</span><button id="playCm">Cm</button><button id="playFm">Fm</button><button id="playG">G</button></div></div>
+            <div class="composition-footer"><p class="help-text">Separate notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). Starting playback from the beginning pads the shorter line with rests so both finish together.</p><div class="song-presets"><span>Try a piece</span><button id="loadChopin" type="button">Fantaisie-Impromptu</button><button id="loadDebussy" type="button">Clair de lune</button><button id="loadJoplin" type="button">Maple Leaf Rag</button></div></div>
             <p id="trackFileStatus" class="help-text file-status" role="status">Save downloads both tracks. Load opens a file from your device and replaces both tracks.</p>
         </section>
         <section class="sound panel" aria-labelledby="soundTitle">
@@ -131,6 +131,7 @@
     var playFns = {};
     var playbackSources = new Set();
     var trackSettings = { title: "", meter: "4/4", repeat: true };
+    var trackLoadRevision = 0;
     var sustainControl = document.getElementById("sustain");
     var reverb = null;
     var reverbLevel = null;
@@ -560,6 +561,8 @@
     function setKeyboardGrabbed(grabbed) {
         if (!grabbed) finishRecording(false);
         keyboardGrabbed = grabbed;
+        document.getElementById("splitKeyboardToggle").hidden = !grabbed;
+        document.getElementById("splitKeyboardSettings").hidden = !grabbed || !splitKeyboard.checked;
         heldShifts.clear();
         updateKeyboardLabels();
         keyboardToggle.textContent = grabbed ? "Ungrab keyboard" : "Grab keyboard";
@@ -579,7 +582,7 @@
     keyboardLayout.addEventListener("change", keyboardSelectionChanged);
     document.getElementById("recordGrid").addEventListener("change", keyboardSelectionChanged);
     splitKeyboard.addEventListener("change", function (event) {
-        document.getElementById("splitKeyboardSettings").hidden = !splitKeyboard.checked;
+        document.getElementById("splitKeyboardSettings").hidden = !keyboardGrabbed || !splitKeyboard.checked;
         keyboardSelectionChanged(event);
     });
     splitKey.addEventListener("change", keyboardSelectionChanged);
@@ -835,18 +838,6 @@
     });
     document.getElementById("pauseButton").addEventListener("click", pausePlayback);
     document.getElementById("stopButton").addEventListener("click", stopPlayback);
-    document.getElementById("playCm").addEventListener("click", function (e) {
-        finishRecording(false);
-        document.getElementById("whatToPlay").value = "c3 c4 d#4 g4";
-    })
-    document.getElementById("playFm").addEventListener("click", function (e) {
-        finishRecording(false);
-        document.getElementById("whatToPlay").value = "c3 c4 f4 g#4";
-    })
-    document.getElementById("playG").addEventListener("click", function (e) {
-        finishRecording(false);
-        document.getElementById("whatToPlay").value = "g3 b3 d4 g4";
-    })
 
     function serializeTracks(upper, lower, tempo) {
         var title = trackSettings.title ? "title: " + trackSettings.title.replace(/[\r\n]/g, " ") + "\n" : "";
@@ -929,26 +920,51 @@
     document.getElementById("loadTracks").addEventListener("click", function () {
         document.getElementById("trackFile").click();
     });
+    function loadTrackText(text, name) {
+        var tracks = parseTracks(text);
+        finishRecording(true);
+        stopPlayback();
+        setMetronomeEnabled(false);
+        document.getElementById("whatToPlay").value = tracks.upper;
+        document.getElementById("whatToPlay2").value = tracks.lower;
+        document.getElementById("tempo").value = tracks.tempo;
+        trackSettings = { title: tracks.title, meter: tracks.meter, repeat: tracks.repeat };
+        document.getElementById("metronomeDescription").textContent = tracks.meter + " · accented first beat · M toggles while keyboard is grabbed";
+        if (tracks.sustain !== null) {
+            sustainControl.value = 50 + tracks.sustain * 50;
+            updateSustain();
+        }
+        document.getElementById("trackFileStatus").textContent = "Loaded " + name + ". Both tracks replaced. Tempo set to " + tracks.tempo + " BPM.";
+    }
+
+    [
+        ["loadChopin", "songs/chopin-fantaisie-impromptu.abr", "Fantaisie-Impromptu"],
+        ["loadDebussy", "songs/debussy-clair-de-lune.abr", "Clair de lune"],
+        ["loadJoplin", "songs/joplin-maple-leaf-rag.abr", "Maple Leaf Rag"]
+    ].forEach(function (song) {
+        document.getElementById(song[0]).addEventListener("click", async function () {
+            var revision = ++trackLoadRevision;
+            document.getElementById("trackFileStatus").textContent = "Loading " + song[2] + "…";
+            try {
+                var response = await fetch(song[1]);
+                if (!response.ok) throw new Error("Song file could not be downloaded.");
+                var text = await response.text();
+                if (revision === trackLoadRevision) loadTrackText(text, song[2]);
+            } catch (error) {
+                if (revision === trackLoadRevision) document.getElementById("trackFileStatus").textContent = "Could not load song: " + error.message;
+            }
+        });
+    });
+
     document.getElementById("trackFile").addEventListener("change", async function (event) {
         var file = event.target.files[0];
         if (!file) return;
+        var revision = ++trackLoadRevision;
         try {
-            var tracks = parseTracks(await file.text());
-            finishRecording(true);
-            stopPlayback();
-            setMetronomeEnabled(false);
-            document.getElementById("whatToPlay").value = tracks.upper;
-            document.getElementById("whatToPlay2").value = tracks.lower;
-            if (tracks.tempo !== null) document.getElementById("tempo").value = tracks.tempo;
-            trackSettings = { title: tracks.title, meter: tracks.meter, repeat: tracks.repeat };
-            document.getElementById("metronomeDescription").textContent = tracks.meter + " · accented first beat · M toggles while keyboard is grabbed";
-            if (tracks.sustain !== null) {
-                sustainControl.value = 50 + tracks.sustain * 50;
-                updateSustain();
-            }
-            document.getElementById("trackFileStatus").textContent = "Loaded " + file.name + ". Both tracks replaced. " + (tracks.tempo !== null ? "Tempo set to " + tracks.tempo + " BPM." : "No tempo in file; current tempo kept.");
+            var text = await file.text();
+            if (revision === trackLoadRevision) loadTrackText(text, file.name);
         } catch (error) {
-            document.getElementById("trackFileStatus").textContent = "Could not load file: " + error.message;
+            if (revision === trackLoadRevision) document.getElementById("trackFileStatus").textContent = "Could not load file: " + error.message;
         } finally {
             event.target.value = "";
         }
