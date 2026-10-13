@@ -172,6 +172,8 @@
         <br style="clear:both"/>
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120"/>
+        <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
+        <span>4/4 · accented first beat</span>
         <button id="playButton">Spela!</button>
         <button id="stopButton">Stoppa!</button>
         <br style="clear:both"/>
@@ -295,6 +297,72 @@
     var keyboardOctave = document.getElementById("keyboardOctave");
     var keyboardLayout = document.getElementById("keyboardLayout");
     var recording = null;
+    var metronomeEnabled = false;
+    var metronomeTimer = null;
+    var metronomeClicks = new Set();
+
+    function clearMetronomeSchedule() {
+        clearInterval(metronomeTimer);
+        metronomeTimer = null;
+        metronomeClicks.forEach(function (oscillator) { oscillator.stop(); });
+        metronomeClicks.clear();
+    }
+
+    function scheduleMetronomeClick(time, accented) {
+        var oscillator = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        oscillator.frequency.value = accented ? 1500 : 1000;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.exponentialRampToValueAtTime(accented ? 0.25 : 0.15, time + 0.002);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.03);
+        oscillator.connect(gain);
+        gain.connect(audioCtx.destination);
+        metronomeClicks.add(oscillator);
+        oscillator.onended = function () {
+            metronomeClicks.delete(oscillator);
+            oscillator.disconnect();
+            gain.disconnect();
+        };
+        oscillator.start(time);
+        oscillator.stop(time + 0.035);
+    }
+
+    function restartMetronome() {
+        clearMetronomeSchedule();
+        if (!metronomeEnabled) return;
+        var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
+        if (!Number.isFinite(tempo) || tempo < 30 || tempo > 4000) return;
+        var beatMs = 60000 / tempo;
+        var origin = recording && recording.startedAt !== null ? recording.startedAt : performance.now();
+        var beat = Math.max(0, Math.ceil((performance.now() - origin - 5) / beatMs));
+        function schedule() {
+            var now = performance.now();
+            // Skip missed beats after a stalled tab instead of playing a burst.
+            beat = Math.max(beat, Math.ceil((now - origin - 50) / beatMs));
+            while (origin + beat * beatMs <= now + 50) {
+                var time = audioCtx.currentTime + Math.max(0, (origin + beat * beatMs - now) / 1000);
+                scheduleMetronomeClick(time, beat % 4 === 0);
+                beat++;
+            }
+        }
+        schedule();
+        metronomeTimer = setInterval(schedule, 25);
+    }
+
+    function setMetronomeEnabled(enabled) {
+        metronomeEnabled = enabled;
+        var button = document.getElementById("metronomeToggle");
+        button.textContent = enabled ? "Stop metronome" : "Start metronome";
+        button.setAttribute("aria-pressed", String(enabled));
+        if (enabled && audioCtx.state === "suspended") audioCtx.resume();
+        restartMetronome();
+    }
+
+    document.getElementById("metronomeToggle").addEventListener("click", function () {
+        if (!metronomeEnabled && !document.getElementById("tempo").reportValidity()) return;
+        setMetronomeEnabled(!metronomeEnabled);
+    });
+    document.getElementById("tempo").addEventListener("change", restartMetronome);
 
     function recordingText(slotCount) {
         var count = Math.max(1, slotCount, recording.slots.length);
@@ -327,6 +395,7 @@
         recording.input.readOnly = recording.previousReadOnly;
         document.getElementById("recordingStatus").textContent = cancel ? "Recording cancelled; previous " + recording.lineName + " restored." : (started ? "Recording saved to " + recording.lineName + "." : "No notes recorded; " + recording.lineName + " kept.");
         recording = null;
+        restartMetronome();
         document.getElementById("recordTop").textContent = "Record top (V)";
         document.getElementById("recordBottom").textContent = "Record bottom (B)";
     }
@@ -356,6 +425,7 @@
         input.readOnly = true;
         document.getElementById(inputId === "whatToPlay" ? "recordTop" : "recordBottom").textContent = "Stop recording (" + recording.shortcut + ")";
         refreshRecording();
+        restartMetronome();
     }
 
     function recordNote(name) {
@@ -363,6 +433,7 @@
         if (recording.startedAt === null) {
             recording.startedAt = performance.now();
             recording.timer = setInterval(refreshRecording, 100);
+            restartMetronome();
         }
         var slot = Math.round((performance.now() - recording.startedAt) / recording.beatMs);
         if (!recording.slots[slot]) recording.slots[slot] = [];
@@ -483,7 +554,10 @@
     });
     window.addEventListener("blur", function () { setKeyboardGrabbed(false); });
     document.addEventListener("visibilitychange", function () {
-        if (document.hidden) setKeyboardGrabbed(false);
+        if (document.hidden) {
+            setKeyboardGrabbed(false);
+            setMetronomeEnabled(false);
+        }
     });
 
     var loop = false;
@@ -526,6 +600,7 @@
 
     document.getElementById("playButton").addEventListener("click", function (e) {
         finishRecording(false);
+        restartMetronome();
         loop = true;
         playIt("whatToPlay");
         playIt("whatToPlay2");
