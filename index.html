@@ -134,7 +134,7 @@
             </select>
             <label><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
             <span id="splitKeyboardSettings" hidden>
-                <label for="splitKey">First note in upper half:</label>
+                <label for="splitKey">First key in upper half:</label>
                 <select id="splitKey"></select>
                 <label for="splitOctaves">Lower half: octaves down</label>
                 <input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required style="width:3em"/>
@@ -223,7 +223,7 @@
             <button id="recordBottom" type="button">Record bottom (B)</button>
             <button id="resetBottom" type="button">Reset</button>
         </div>
-        <p id="recordingStatus" role="status">V/B arms or stops recording while the keyboard is grabbed. Recording starts on the first note and ends on a full 4/4 bar. Escape cancels and restores the previous line.</p>
+        <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its 4/4 bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120" required/>
@@ -410,7 +410,7 @@
         var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
         if (!Number.isFinite(tempo) || tempo < 30 || tempo > 4000) return;
         var beatMs = 60000 / tempo;
-        var origin = recording && recording.startedAt !== null ? recording.startedAt : performance.now();
+        var origin = recording ? recording.armedAt : performance.now();
         var beat = Math.max(0, Math.ceil((performance.now() - origin - 5) / beatMs));
         function schedule() {
             var now = performance.now();
@@ -453,10 +453,11 @@
     function refreshRecording() {
         if (!recording) return;
         if (recording.startedAt === null) {
-            document.getElementById("recordingStatus").textContent = "Ready to record " + recording.lineName + " at " + recording.tempo + " BPM. Play the first note to start; " + recording.shortcut + " stops, Escape cancels.";
+            var countInBeat = Math.floor((performance.now() - recording.armedAt) / recording.beatMs) % 4 + 1;
+            document.getElementById("recordingStatus").textContent = "Ready to record " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + countInBeat + "/4. Play the first note to start; " + recording.shortcut + " stops, Escape cancels.";
             return;
         }
-        var beat = Math.floor((performance.now() - recording.startedAt) / recording.beatMs);
+        var beat = Math.max(0, Math.floor((performance.now() - recording.startedAt) / recording.beatMs));
         recording.input.value = recordingText(beat + 1);
         document.getElementById("recordingStatus").textContent = "Recording " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + (beat + 1) + ". Press " + recording.shortcut + " to stop, or Escape to cancel and restore.";
     }
@@ -496,21 +497,22 @@
             shortcut: inputId === "whatToPlay" ? "V" : "B",
             tempo: tempo,
             beatMs: 60000 / tempo,
+            armedAt: performance.now(),
             startedAt: null,
             slots: []
         };
         input.readOnly = true;
         document.getElementById(inputId === "whatToPlay" ? "recordTop" : "recordBottom").textContent = "Stop recording (" + recording.shortcut + ")";
+        recording.timer = setInterval(refreshRecording, 100);
+        setMetronomeEnabled(true);
         refreshRecording();
-        restartMetronome();
     }
 
     function recordNote(name) {
         if (!recording) return;
         if (recording.startedAt === null) {
-            recording.startedAt = performance.now();
-            recording.timer = setInterval(refreshRecording, 100);
-            setMetronomeEnabled(true);
+            var firstBeat = Math.round((performance.now() - recording.armedAt) / recording.beatMs);
+            recording.startedAt = recording.armedAt + Math.floor(firstBeat / 4) * 4 * recording.beatMs;
         }
         var slot = Math.round((performance.now() - recording.startedAt) / recording.beatMs);
         if (!recording.slots[slot]) recording.slots[slot] = [];
@@ -547,11 +549,10 @@
     function keyboardPianoKey(index) {
         var pianoIndex = (effectiveKeyboardOctave() - 2) * 12 + keyboardNoteOffsets[index];
         if (splitKeyboard.checked) {
-            var splitIndex = pianoKeys.findIndex(function (key) {
-                return key.querySelector("span").textContent === splitKey.value;
-            });
+            var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
+            var splitIndex = codes.indexOf(splitKey.value);
             var octaves = Number(splitOctaves.value);
-            if (splitIndex !== -1 && pianoIndex < splitIndex &&
+            if (splitIndex !== -1 && keyboardNoteOffsets[index] < keyboardNoteOffsets[splitIndex] &&
                 Number.isInteger(octaves) && octaves >= 0 && octaves <= 4) {
                 pianoIndex -= octaves * 12;
             }
@@ -560,12 +561,16 @@
     }
 
     function updateSplitKeyOptions() {
-        var selected = splitKey.value || "c5";
+        var selected = splitKey.value || "KeyK";
+        var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
+        var labels = keyboardLayouts[keyboardLayout.value];
         splitKey.textContent = "";
-        pianoKeys.forEach(function (key) {
+        codes.map(function (code, index) { return index; }).sort(function (a, b) {
+            return keyboardNoteOffsets[a] - keyboardNoteOffsets[b];
+        }).forEach(function (index) {
             var option = document.createElement("option");
-            option.value = key.querySelector("span").textContent;
-            option.textContent = option.value;
+            option.value = codes[index];
+            option.textContent = labels[index];
             splitKey.appendChild(option);
         });
         splitKey.value = selected;
