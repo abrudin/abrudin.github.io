@@ -226,8 +226,8 @@
             <button id="recordBottom" type="button">Record bottom (B)</button>
             <button id="resetBottom" type="button">Reset</button>
         </div>
-        <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its 4/4 bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
-        <p>Sequence format: separate quarter notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). q toggles eighth-note mode on/off: q c4 d4 q e4 plays two eighth notes, then a quarter note. Rests also become eighth notes while q is on. Each repeat starts in quarter-note mode. s stops playback. Starting playback from the beginning pads the shorter line with rests so both repeat together.</p>
+        <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
+        <p>Separate notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). Starting playback from the beginning pads the shorter line with rests so both finish together.</p>
         <div class="keyboard-controls">
             <button id="saveTracks" type="button">Save tracks (.abr)</button>
             <button id="loadTracks" type="button">Load tracks (.abr)</button>
@@ -240,10 +240,10 @@
         <label for="recordGrid">Recording grid:</label>
         <select id="recordGrid">
             <option value="4">Quarter notes</option>
-            <option value="8" selected>Eighth notes (q)</option>
+            <option value="8" selected>Eighth notes</option>
         </select>
         <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
-        <span>4/4 · accented first beat · M toggles while keyboard is grabbed</span>
+        <span id="metronomeDescription">4/4 · accented first beat · M toggles while keyboard is grabbed</span>
         <button id="playButton" type="button">Play</button>
         <button id="pauseButton" type="button">Pause</button>
         <button id="stopButton" type="button">Stop and start over</button>
@@ -254,7 +254,7 @@
         <button id="playG">G</button>
         <div class="keyboard-controls">
             <label for="sustain">Sustain / reverb:</label>
-            <input id="sustain" type="range" min="0" max="100" value="50" aria-describedby="sustainHelp"/>
+            <input id="sustain" type="range" min="0" max="100" step="0.1" value="50" aria-describedby="sustainHelp"/>
             <output id="sustainValue" for="sustain">Original sound</output>
             <p id="sustainHelp">Middle: original sound. Left: shorter notes. Right: added reverb. Note-length changes apply to new notes.</p>
         </div>
@@ -266,6 +266,7 @@
 
     var playFns = {};
     var playbackSources = new Set();
+    var trackSettings = { title: "", meter: "4/4", repeat: true };
     var sustainControl = document.getElementById("sustain");
     var reverb = null;
     var reverbLevel = null;
@@ -486,7 +487,8 @@
         if (!metronomeEnabled) return;
         var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
         if (!Number.isFinite(tempo) || tempo < 30 || tempo > 4000) return;
-        var beatMs = 60000 / tempo;
+        var meter = trackSettings.meter.split("/").map(Number);
+        var beatMs = 60000 / tempo * 4 / meter[1];
         var origin = recording ? recording.armedAt : performance.now();
         var beat = Math.max(0, Math.ceil((performance.now() - origin - 5) / beatMs));
         function schedule() {
@@ -495,7 +497,7 @@
             beat = Math.max(beat, Math.ceil((now - origin - 50) / beatMs));
             while (origin + beat * beatMs <= now + 50) {
                 var time = audioCtx.currentTime + Math.max(0, (origin + beat * beatMs - now) / 1000);
-                scheduleMetronomeClick(time, beat % 4 === 0);
+                scheduleMetronomeClick(time, beat % meter[0] === 0);
                 beat++;
             }
         }
@@ -525,14 +527,14 @@
             slots.push(recording.slots[i] ? recording.slots[i].join(",") : "r");
         }
         var text = slots.join(" ");
-        return recording.slotsPerBar === 8 ? "q " + text + " q" : text;
+        return recording.grid === 8 ? "duration: 1/8\n" + text : text;
     }
 
     function refreshRecording() {
         if (!recording) return;
         if (recording.startedAt === null) {
-            var countInBeat = Math.floor((performance.now() - recording.armedAt) / recording.beatMs) % 4 + 1;
-            document.getElementById("recordingStatus").textContent = "Ready to record " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + countInBeat + "/4. Play the first note to start; " + recording.shortcut + " stops, Escape cancels.";
+            var countInBeat = Math.floor((performance.now() - recording.armedAt) / recording.pulseMs) % recording.meterBeats + 1;
+            document.getElementById("recordingStatus").textContent = "Ready to record " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + countInBeat + "/" + recording.meterBeats + ". Play the first note to start; " + recording.shortcut + " stops, Escape cancels.";
             return;
         }
         var beat = Math.max(0, Math.floor((performance.now() - recording.startedAt) / recording.beatMs));
@@ -546,7 +548,7 @@
         clearInterval(recording.timer);
         var started = recording.startedAt !== null;
         var slotCount = started ? Math.ceil((performance.now() - recording.startedAt) / recording.slotMs) : 0;
-        // Complete the last 4/4 bar, including any note snapped to a later slot.
+        // Complete the last bar, including any note snapped to a later slot.
         if (started) slotCount = Math.ceil(Math.max(1, slotCount, recording.slots.length) / recording.slotsPerBar) * recording.slotsPerBar;
         recording.input.value = cancel || !started ? recording.previousValue : recordingText(slotCount);
         recording.input.readOnly = recording.previousReadOnly;
@@ -567,9 +569,15 @@
             document.getElementById("recordingStatus").textContent = "Set a tempo between 30 and 4000 BPM before recording.";
             return;
         }
+        var grid = Number(document.getElementById("recordGrid").value);
+        var meter = trackSettings.meter.split("/").map(Number);
+        var slotsPerBar = meter[0] * grid / meter[1];
+        if (!Number.isInteger(slotsPerBar)) {
+            document.getElementById("recordingStatus").textContent = "Choose a finer recording grid for " + trackSettings.meter + " meter.";
+            return;
+        }
         stopPlayback();
         var input = document.getElementById(inputId);
-        var slotsPerBar = Number(document.getElementById("recordGrid").value);
         recording = {
             input: input,
             previousValue: input.value,
@@ -579,7 +587,10 @@
             tempo: tempo,
             beatMs: 60000 / tempo,
             slotsPerBar: slotsPerBar,
-            slotMs: 60000 / tempo * 4 / slotsPerBar,
+            grid: grid,
+            slotMs: 60000 / tempo * 4 / grid,
+            pulseMs: 60000 / tempo * 4 / meter[1],
+            meterBeats: meter[0],
             armedAt: performance.now(),
             startedAt: null,
             slots: []
@@ -786,11 +797,11 @@
     var loop = false;
     var playbackTracks = null;
 
-    function parseSequenceToken(token, halfBeat) {
-        if (token === "q" || token === "s") return { control: token, ticks: 0, notes: [] };
+    function parseSequenceToken(token, defaultTicks) {
+        if (token === "s") return { control: token, ticks: 0, notes: [] };
         var parts = token.split(":");
         if (parts.length > 2) throw new Error("Invalid duration: " + token);
-        var ticks = halfBeat ? 480 : 960;
+        var ticks = defaultTicks === undefined ? 960 : defaultTicks;
         if (parts.length === 2) {
             var duration = /^([1-9]\d*)(?:\/([1-9]\d*))?$/.exec(parts[1]);
             var numerator = duration ? Number(duration[1]) : 0;
@@ -808,6 +819,23 @@
         return { ticks: ticks, notes: notes };
     }
 
+    function compileSequence(text) {
+        var events = [];
+        var defaultTicks = 960;
+        text.replace(/\r\n?/g, "\n").split("\n").forEach(function (line) {
+            var trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith("#")) return;
+            if (trimmed.startsWith("duration:")) {
+                defaultTicks = parseSequenceToken("r:" + trimmed.slice(9).trim()).ticks;
+                return;
+            }
+            trimmed.replace(/\|/g, " ").split(/\s+/).filter(Boolean).forEach(function (token) {
+                events.push(parseSequenceToken(token, defaultTicks));
+            });
+        });
+        return events;
+    }
+
     function durationFraction(ticks) {
         var a = ticks, b = 3840;
         while (b) { var remainder = a % b; a = b; b = remainder; }
@@ -817,27 +845,21 @@
     function alignSequenceLoops() {
         var sequences = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
             var input = document.getElementById(inputId);
-            var text = input.value.trim();
-            var tokens = text ? text.split(/\s+/) : [];
-            var halfBeat = false;
+            var events = compileSequence(input.value);
             var length = 0;
-            tokens.forEach(function (token) {
-                var event = parseSequenceToken(token, halfBeat);
-                if (event.control === "q") halfBeat = !halfBeat;
-                else length += event.ticks;
+            events.forEach(function (event) {
+                length += event.ticks;
+                if (!Number.isSafeInteger(length)) throw new Error("Track duration is too large.");
             });
-            return { input: input, tokens: tokens, length: length, halfBeat: halfBeat };
+            return { input: input, events: events, length: length };
         });
         // An explicit stop ends playback instead of repeating.
-        if (sequences.some(function (sequence) { return sequence.tokens.indexOf("s") !== -1; })) return;
+        if (sequences.some(function (sequence) { return sequence.events.some(function (event) { return event.control === "s"; }); })) return;
         var length = Math.max(sequences[0].length, sequences[1].length);
         if (!length) return;
         sequences.forEach(function (sequence) {
-            if (sequence.halfBeat) sequence.tokens.push("q");
             var missing = length - sequence.length;
-            for (var i = 0; i < Math.floor(missing / 960); i++) sequence.tokens.push("r");
-            if (missing % 960) sequence.tokens.push("r:" + durationFraction(missing % 960));
-            sequence.input.value = sequence.tokens.join(" ");
+            if (missing) sequence.input.value = sequence.input.value.trim() + "\nr:" + durationFraction(missing);
         });
     }
 
@@ -851,7 +873,7 @@
     }
 
     function startAccompaniment(inputId, firstNoteAt) {
-        var track = { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: recording.beatMs, timer: null, remaining: 0, dueAt: recording.startedAt, seekOrigin: recording.startedAt, seekUntil: firstNoteAt, done: false };
+        var track = { inputId: inputId, tokens: null, index: 0, beatMs: recording.beatMs, timer: null, remaining: 0, dueAt: recording.startedAt, seekOrigin: recording.startedAt, seekUntil: firstNoteAt, done: false };
         playbackTracks = [track];
         loop = true;
         if (firstNoteAt > performance.now()) queuePlayback(track, firstNoteAt - performance.now(), firstNoteAt);
@@ -861,35 +883,29 @@
     function advancePlayback(track) {
         if (!loop || track.done) return;
         if (track.seekUntil !== undefined) track.dueAt = track.seekOrigin;
-        // q toggles eighth notes; skip control tokens without consuming a beat.
-        var controlsRead = 0;
         while (loop) {
             if (!track.tokens || track.index >= track.tokens.length) {
-                var text = document.getElementById(track.inputId).value.trim();
-                track.tokens = text ? text.split(/\s+/) : [];
+                if (track.tokens && !recording && !trackSettings.repeat) {
+                    track.done = true;
+                    if (playbackTracks.every(function (item) { return item.done; })) loop = false;
+                    return;
+                }
+                try {
+                    track.tokens = compileSequence(document.getElementById(track.inputId).value);
+                } catch (error) {
+                    stopPlayback();
+                    document.getElementById("trackFileStatus").textContent = "Could not play track: " + error.message;
+                    return;
+                }
                 track.index = 0;
-                track.halfBeat = false;
             }
-            if (!track.tokens.length || controlsRead >= track.tokens.length) {
+            if (!track.tokens.length) {
                 track.done = true;
                 if (playbackTracks.every(function (item) { return item.done; })) loop = false;
                 return;
             }
-            var token = track.tokens[track.index++];
-            var event;
-            try {
-                event = parseSequenceToken(token, track.halfBeat);
-            } catch (error) {
-                stopPlayback();
-                document.getElementById("trackFileStatus").textContent = "Could not play track: " + error.message;
-                return;
-            }
-            if (token === "q") {
-                track.halfBeat = !track.halfBeat;
-                controlsRead++;
-                continue;
-            }
-            if (token === "s") {
+            var event = track.tokens[track.index++];
+            if (event.control === "s") {
                 stopPlayback();
                 return;
             }
@@ -898,7 +914,6 @@
             var duration = track.beatMs * event.ticks / 960;
             if (track.seekUntil !== undefined && track.dueAt + duration <= track.seekUntil + 0.000001) {
                 track.dueAt += duration;
-                controlsRead = 0;
                 continue;
             }
             delete track.seekUntil;
@@ -944,7 +959,7 @@
             }
             var startedAt = performance.now();
             playbackTracks = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
-                return { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, dueAt: startedAt, done: false };
+                return { inputId: inputId, tokens: null, index: 0, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, dueAt: startedAt, done: false };
             });
         }
         loop = true;
@@ -970,37 +985,60 @@
     })
 
     function serializeTracks(upper, lower, tempo) {
-        return "ABR 1\ntempo: " + tempo + "\n\n[upper]\n" + upper.trim() + "\n\n[lower]\n" + lower.trim() + "\n";
+        var title = trackSettings.title ? "title: " + trackSettings.title.replace(/[\r\n]/g, " ") + "\n" : "";
+        var sustain = (Number(sustainControl.value) - 50) / 50;
+        return "ABR 2\n" + title + "tempo: " + tempo + "\nmeter: " + trackSettings.meter + "\nrepeat: " + (trackSettings.repeat ? "yes" : "no") + "\nsustain: " + sustain + "\n\n[upper]\n" + upper.trim() + "\n\n[lower]\n" + lower.trim() + "\n";
     }
 
     function parseTracks(text) {
         var lines = text.replace(/^\uFEFF/, "").replace(/\r\n?/g, "\n").split("\n");
-        if (lines.shift().trim() !== "ABR 1") throw new Error("Expected an ABR 1 file.");
+        while (lines.length && (!lines[0].trim() || lines[0].trim().startsWith("#"))) lines.shift();
+        if (!lines.length || lines.shift().trim() !== "ABR 2") throw new Error("Expected an ABR 2 file.");
         var sections = {};
         var section = null;
-        var tempo = null;
+        var metadata = { title: "", tempo: 120, meter: "4/4", repeat: true, sustain: null };
+        var fields = new Set();
         lines.forEach(function (line) {
             var trimmed = line.trim();
+            if (trimmed.startsWith("#")) {
+                if (section) sections[section].push(line);
+                return;
+            }
             if (/^\[.*\]$/.test(trimmed)) {
                 if (trimmed !== "[upper]" && trimmed !== "[lower]") throw new Error("Unknown track section: " + trimmed);
                 section = trimmed.slice(1, -1);
                 if (sections[section]) throw new Error("Duplicate " + section + " section.");
                 sections[section] = [];
-            } else if (!section && trimmed.startsWith("tempo:")) {
-                if (tempo !== null) throw new Error("Duplicate tempo field.");
-                var value = trimmed.slice(6).trim();
-                tempo = Number(value);
-                if (!/^\d+(\.\d+)?$/.test(value) || !Number.isFinite(tempo) || tempo < 30 || tempo > 4000) throw new Error("Tempo must be between 30 and 4000 BPM.");
+            } else if (!section && trimmed) {
+                var field = /^(title|tempo|meter|repeat|sustain):\s*(.*)$/.exec(trimmed);
+                if (!field) throw new Error("Unknown metadata: " + trimmed);
+                var name = field[1], value = field[2].trim();
+                if (fields.has(name)) throw new Error("Duplicate " + name + " field.");
+                fields.add(name);
+                if (name === "title") metadata.title = value;
+                if (name === "tempo") {
+                    metadata.tempo = Number(value);
+                    if (!/^\d+(\.\d+)?$/.test(value) || !Number.isFinite(metadata.tempo) || metadata.tempo < 30 || metadata.tempo > 4000) throw new Error("Tempo must be between 30 and 4000 BPM.");
+                }
+                if (name === "meter") {
+                    if (!/^([1-9]|[12]\d|3[0-2])\/(1|2|4|8|16)$/.test(value)) throw new Error("Invalid meter: " + value);
+                    metadata.meter = value;
+                }
+                if (name === "repeat") {
+                    if (value !== "yes" && value !== "no") throw new Error("Repeat must be yes or no.");
+                    metadata.repeat = value === "yes";
+                }
+                if (name === "sustain") {
+                    metadata.sustain = Number(value);
+                    if (!/^-?(?:\d+(?:\.\d+)?|\.\d+)$/.test(value) || !Number.isFinite(metadata.sustain) || metadata.sustain < -1 || metadata.sustain > 1) throw new Error("Sustain must be between -1 and 1.");
+                }
             } else if (section) sections[section].push(line);
             else if (trimmed) throw new Error("Track content must be inside [upper] or [lower].");
         });
         if (!sections.upper || !sections.lower) throw new Error("The file needs both [upper] and [lower] sections.");
-        var tracks = { upper: sections.upper.join("\n").trim(), lower: sections.lower.join("\n").trim(), tempo: tempo };
+        var tracks = Object.assign(metadata, { upper: sections.upper.join("\n").trim(), lower: sections.lower.join("\n").trim() });
         [tracks.upper, tracks.lower].forEach(function (track) {
-            if (!track) return;
-            track.split(/\s+/).forEach(function (token) {
-                parseSequenceToken(token, false);
-            });
+            compileSequence(track);
         });
         return tracks;
     }
@@ -1009,6 +1047,10 @@
         if (!document.getElementById("tempo").reportValidity()) return;
         finishRecording(false);
         var text = serializeTracks(document.getElementById("whatToPlay").value, document.getElementById("whatToPlay2").value, Number(document.getElementById("tempo").value));
+        try { parseTracks(text); } catch (error) {
+            document.getElementById("trackFileStatus").textContent = "Could not save file: " + error.message;
+            return;
+        }
         var url = URL.createObjectURL(new Blob([text], { type: "text/plain;charset=utf-8" }));
         var link = document.createElement("a");
         link.href = url;
@@ -1034,6 +1076,12 @@
             document.getElementById("whatToPlay").value = tracks.upper;
             document.getElementById("whatToPlay2").value = tracks.lower;
             if (tracks.tempo !== null) document.getElementById("tempo").value = tracks.tempo;
+            trackSettings = { title: tracks.title, meter: tracks.meter, repeat: tracks.repeat };
+            document.getElementById("metronomeDescription").textContent = tracks.meter + " · accented first beat · M toggles while keyboard is grabbed";
+            if (tracks.sustain !== null) {
+                sustainControl.value = 50 + tracks.sustain * 50;
+                updateSustain();
+            }
             document.getElementById("trackFileStatus").textContent = "Loaded " + file.name + ". Both tracks replaced. " + (tracks.tempo !== null ? "Tempo set to " + tracks.tempo + " BPM." : "No tempo in file; current tempo kept.");
         } catch (error) {
             document.getElementById("trackFileStatus").textContent = "Could not load file: " + error.message;
