@@ -359,9 +359,12 @@
     keyboardCodes.push("KeyQ");
     swedishKeyboardCodes.push("KeyQ");
     keyboardNoteOffsets.push(-2); // B-flat below the C played by A; B is unmapped.
+    keyboardCodes.push("Enter");
+    swedishKeyboardCodes.push("Enter");
+    keyboardNoteOffsets.push(21); // High A above the existing top G-sharp.
     var keyboardLayouts = {
-        english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\", "Q"],
-        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "'", "¨", "Q"]
+        english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\", "Q", "Enter"],
+        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "'", "¨", "Q", "Enter"]
     };
     var pianoKeys = Array.from(document.querySelectorAll("#clav > div"));
     var keyboardToggle = document.getElementById("keyboardToggle");
