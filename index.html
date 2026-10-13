@@ -171,11 +171,12 @@
         <p id="recordingStatus" role="status">V/B arms or stops recording while the keyboard is grabbed. Recording starts on the first note and ends on a full 4/4 bar. Escape cancels and restores the previous line.</p>
         <br style="clear:both"/>
         <br style="clear:both"/>
-        <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120"/>
+        <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120" required/>
         <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
         <span>4/4 · accented first beat · M toggles while keyboard is grabbed</span>
-        <button id="playButton">Spela!</button>
-        <button id="stopButton">Stoppa!</button>
+        <button id="playButton" type="button">Play</button>
+        <button id="pauseButton" type="button">Pause</button>
+        <button id="stopButton" type="button">Stop and start over</button>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <button id="playCm">Cm</button>
@@ -188,6 +189,7 @@
 
 
     var playFns = {};
+    var playbackSources = new Set();
 
     function init() {
         var loadSound = function (url, cb) {
@@ -198,12 +200,21 @@
             // Decode asynchronously
             request.onload = function () {
                 audioCtx.decodeAudioData(request.response, function (buffer) {
-                    var play = function (speed) {
+                    var play = function (speed, volume) {
                         var source = audioCtx.createBufferSource();
+                        var gain = audioCtx.createGain();
                         source.buffer = buffer;
                         source.playbackRate.value = speed;
-                        source.connect(audioCtx.destination);
+                        gain.gain.value = volume;
+                        source.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        source.onended = function () {
+                            playbackSources.delete(source);
+                            source.disconnect();
+                            gain.disconnect();
+                        };
                         source.start();
+                        return source;
                     };
                     cb(play);
                 }, function (e) {
@@ -234,8 +245,9 @@
             };
             names.forEach(function (name, index) {
                 playFns[name] = function () {
-                    play(Math.pow(1.0295, index * 2));
+                    var source = play(Math.pow(1.0295, index * 2), startIndex + index >= 42 ? 1.5 : 1);
                     highlight(keys[startIndex + index]);
+                    return source;
                 };
                 loadKeyInternal(keys[startIndex + index], function () {
                     recordNote(name);
@@ -399,7 +411,7 @@
         recording.input.readOnly = recording.previousReadOnly;
         document.getElementById("recordingStatus").textContent = cancel ? "Recording cancelled; previous " + recording.lineName + " restored." : (started ? "Recording saved to " + recording.lineName + "." : "No notes recorded; " + recording.lineName + " kept.");
         recording = null;
-        restartMetronome();
+        setMetronomeEnabled(false);
         document.getElementById("recordTop").textContent = "Record top (V)";
         document.getElementById("recordBottom").textContent = "Record bottom (B)";
     }
@@ -413,7 +425,7 @@
             document.getElementById("recordingStatus").textContent = "Set a tempo between 30 and 4000 BPM before recording.";
             return;
         }
-        loop = false;
+        stopPlayback();
         var input = document.getElementById(inputId);
         recording = {
             input: input,
@@ -437,7 +449,7 @@
         if (recording.startedAt === null) {
             recording.startedAt = performance.now();
             recording.timer = setInterval(refreshRecording, 100);
-            restartMetronome();
+            setMetronomeEnabled(true);
         }
         var slot = Math.round((performance.now() - recording.startedAt) / recording.beatMs);
         if (!recording.slots[slot]) recording.slots[slot] = [];
@@ -573,53 +585,91 @@
     });
 
     var loop = false;
+    var playbackTracks = null;
 
-    function playIt(inputId) {
-
-        var q = false;
-
-        function a(data) {
-            if (!loop) return;
-            time = 1000 / (document.getElementById("tempo").value / 60);
-            if (data.length > 0) {
-                if (data[0] === 'q') {
-                    q = !q;
-                } else if (data[0] === 's') {
-                    loop = false;
-                } else if (data[0] !== "r") {
-                    data[0].split(",").forEach(function (d) {
-                        if (loop) {
-                            try {
-                                playFns[d]();
-                            } catch (err) {
-                            }
-                        }
-                    });
-                }
-                setTimeout(function () {
-                    a(data.slice(1));
-                }, data[0] === 'q' ? 0 : (q ? time / 2 : time));
-            } else {
-                a(document.getElementById(inputId).value.split(" "));
-            }
-        }
-
-        a(document.getElementById(inputId).value.split(" "));
-
-
+    function queuePlayback(track, delay) {
+        track.remaining = delay;
+        track.dueAt = performance.now() + delay;
+        track.timer = setTimeout(function () {
+            track.timer = null;
+            advancePlayback(track);
+        }, delay);
     }
 
+    function advancePlayback(track) {
+        if (!loop || track.done) return;
+        // q toggles eighth notes; skip control tokens without consuming a beat.
+        var controlsRead = 0;
+        while (loop) {
+            if (!track.tokens || track.index >= track.tokens.length) {
+                var text = document.getElementById(track.inputId).value.trim();
+                track.tokens = text ? text.split(/\s+/) : [];
+                track.index = 0;
+            }
+            if (!track.tokens.length || controlsRead >= track.tokens.length) {
+                track.done = true;
+                if (playbackTracks.every(function (item) { return item.done; })) loop = false;
+                return;
+            }
+            var token = track.tokens[track.index++];
+            if (token === "q") {
+                track.halfBeat = !track.halfBeat;
+                controlsRead++;
+                continue;
+            }
+            if (token === "s") {
+                stopPlayback();
+                return;
+            }
+            if (token !== "r") token.split(",").forEach(function (name) {
+                if (playFns[name]) playbackSources.add(playFns[name]());
+            });
+            var tempo = Number(document.getElementById("tempo").value);
+            if (Number.isFinite(tempo) && tempo >= 30 && tempo <= 4000) track.beatMs = 60000 / tempo;
+            queuePlayback(track, track.halfBeat ? track.beatMs / 2 : track.beatMs);
+            return;
+        }
+    }
+
+    function pausePlayback() {
+        loop = false;
+        if (!playbackTracks) return;
+        playbackTracks.forEach(function (track) {
+            if (track.timer !== null) {
+                track.remaining = Math.max(0, track.dueAt - performance.now());
+                clearTimeout(track.timer);
+                track.timer = null;
+            }
+        });
+    }
+
+    function stopPlayback() {
+        pausePlayback();
+        playbackTracks = null;
+        playbackSources.forEach(function (source) { source.stop(); });
+        playbackSources.clear();
+    }
 
     document.getElementById("playButton").addEventListener("click", function (e) {
+        if (loop) return;
+        if (!document.getElementById("tempo").reportValidity()) return;
         finishRecording(false);
+        if (audioCtx.state === "suspended") audioCtx.resume();
         restartMetronome();
+        if (!playbackTracks || playbackTracks.every(function (track) { return track.done; })) {
+            playbackTracks = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
+                return { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, done: false };
+            });
+        }
         loop = true;
-        playIt("whatToPlay");
-        playIt("whatToPlay2");
+        playbackTracks.forEach(function (track) {
+            if (!loop || track.done) return;
+            if (track.remaining > 0) queuePlayback(track, track.remaining);
+            else advancePlayback(track);
+        });
     });
-    document.getElementById("stopButton").addEventListener("click", function (e) {
-        loop = false;
-    })
+    document.getElementById("pauseButton").addEventListener("click", pausePlayback);
+    document.getElementById("stopButton").addEventListener("click", stopPlayback);
     document.getElementById("playCm").addEventListener("click", function (e) {
         finishRecording(false);
         document.getElementById("whatToPlay").value = "c3 c4 d#4 g4";
