@@ -163,9 +163,12 @@
         <br style="clear:both"/>
         <br style="clear:both"/>
         <input id="whatToPlay" type="text" style="width:80%"/>
+        <button id="recordTop" type="button">Record top (V)</button>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <input id="whatToPlay2" type="text" style="width:80%"/>
+        <button id="recordBottom" type="button">Record bottom (B)</button>
+        <p id="recordingStatus" role="status">V/B arms or stops recording while the keyboard is grabbed. Recording starts on the first note and ends on a full 4/4 bar. Escape cancels and restores the previous line.</p>
         <br style="clear:both"/>
         <br style="clear:both"/>
         <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120"/>
@@ -232,7 +235,10 @@
                     play(Math.pow(1.0295, index * 2));
                     highlight(keys[startIndex + index]);
                 };
-                loadKeyInternal(keys[startIndex + index], playFns[name]);
+                loadKeyInternal(keys[startIndex + index], function () {
+                    recordNote(name);
+                    playFns[name]();
+                });
             });
         };
 
@@ -288,6 +294,88 @@
     var keyboardToggle = document.getElementById("keyboardToggle");
     var keyboardOctave = document.getElementById("keyboardOctave");
     var keyboardLayout = document.getElementById("keyboardLayout");
+    var recording = null;
+
+    function recordingText(slotCount) {
+        var count = Math.max(1, slotCount, recording.slots.length);
+        var slots = [];
+        for (var i = 0; i < count; i++) {
+            slots.push(recording.slots[i] ? recording.slots[i].join(",") : "r");
+        }
+        return slots.join(" ");
+    }
+
+    function refreshRecording() {
+        if (!recording) return;
+        if (recording.startedAt === null) {
+            document.getElementById("recordingStatus").textContent = "Ready to record " + recording.lineName + " at " + recording.tempo + " BPM. Play the first note to start; " + recording.shortcut + " stops, Escape cancels.";
+            return;
+        }
+        var beat = Math.floor((performance.now() - recording.startedAt) / recording.beatMs);
+        recording.input.value = recordingText(beat + 1);
+        document.getElementById("recordingStatus").textContent = "Recording " + recording.lineName + " at " + recording.tempo + " BPM · Beat " + (beat + 1) + ". Press " + recording.shortcut + " to stop, or Escape to cancel and restore.";
+    }
+
+    function finishRecording(cancel) {
+        if (!recording) return;
+        clearInterval(recording.timer);
+        var started = recording.startedAt !== null;
+        var slotCount = started ? Math.ceil((performance.now() - recording.startedAt) / recording.beatMs) : 0;
+        // Complete the last 4/4 bar, including any note snapped to a later slot.
+        if (started) slotCount = Math.ceil(Math.max(1, slotCount, recording.slots.length) / 4) * 4;
+        recording.input.value = cancel || !started ? recording.previousValue : recordingText(slotCount);
+        recording.input.readOnly = recording.previousReadOnly;
+        document.getElementById("recordingStatus").textContent = cancel ? "Recording cancelled; previous " + recording.lineName + " restored." : (started ? "Recording saved to " + recording.lineName + "." : "No notes recorded; " + recording.lineName + " kept.");
+        recording = null;
+        document.getElementById("recordTop").textContent = "Record top (V)";
+        document.getElementById("recordBottom").textContent = "Record bottom (B)";
+    }
+
+    function toggleRecording(inputId) {
+        var sameLine = recording && recording.input.id === inputId;
+        finishRecording(false);
+        if (sameLine) return;
+        var tempo = Number(document.getElementById("tempo").value);
+        if (!Number.isFinite(tempo) || tempo < 30 || tempo > 4000) {
+            document.getElementById("recordingStatus").textContent = "Set a tempo between 30 and 4000 BPM before recording.";
+            return;
+        }
+        loop = false;
+        var input = document.getElementById(inputId);
+        recording = {
+            input: input,
+            previousValue: input.value,
+            previousReadOnly: input.readOnly,
+            lineName: inputId === "whatToPlay" ? "top line" : "bottom line",
+            shortcut: inputId === "whatToPlay" ? "V" : "B",
+            tempo: tempo,
+            beatMs: 60000 / tempo,
+            startedAt: null,
+            slots: []
+        };
+        input.readOnly = true;
+        document.getElementById(inputId === "whatToPlay" ? "recordTop" : "recordBottom").textContent = "Stop recording (" + recording.shortcut + ")";
+        refreshRecording();
+    }
+
+    function recordNote(name) {
+        if (!recording) return;
+        if (recording.startedAt === null) {
+            recording.startedAt = performance.now();
+            recording.timer = setInterval(refreshRecording, 100);
+        }
+        var slot = Math.round((performance.now() - recording.startedAt) / recording.beatMs);
+        if (!recording.slots[slot]) recording.slots[slot] = [];
+        if (recording.slots[slot].indexOf(name) === -1) recording.slots[slot].push(name);
+        refreshRecording();
+    }
+
+    ["recordTop", "recordBottom"].forEach(function (id) {
+        document.getElementById(id).addEventListener("click", function () {
+            setKeyboardGrabbed(true);
+            toggleRecording(id === "recordTop" ? "whatToPlay" : "whatToPlay2");
+        });
+    });
 
     function releaseKeyboardNotes() {
         heldKeys.forEach(function (key) { key.classList.remove("held"); });
@@ -304,7 +392,7 @@
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
         var start = (effectiveKeyboardOctave() - 2) * 12;
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
-        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". Escape releases the keyboard.";
+        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line in quarter notes at the starting tempo. Escape cancels recording and releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
             var label = document.createElement("span");
             label.className = "keyboard-label";
@@ -314,6 +402,7 @@
     }
 
     function setKeyboardGrabbed(grabbed) {
+        if (!grabbed) finishRecording(false);
         keyboardGrabbed = grabbed;
         heldShifts.clear();
         updateKeyboardLabels();
@@ -338,12 +427,18 @@
         if (!keyboardGrabbed) return;
         if (event.code === "Escape") {
             event.preventDefault();
+            finishRecording(true);
             setKeyboardGrabbed(false);
             return;
         }
         // Keep browser shortcuts and form controls usable while grabbed.
         if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing ||
             event.target.closest("input, textarea, select, [contenteditable]")) return;
+        if (event.code === "KeyV" || event.code === "KeyB") {
+            event.preventDefault();
+            if (!event.repeat) toggleRecording(event.code === "KeyV" ? "whatToPlay" : "whatToPlay2");
+            return;
+        }
         if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
             event.preventDefault();
             if (!heldShifts.has(event.code)) {
@@ -373,6 +468,7 @@
         if (audioCtx.state === "suspended") audioCtx.resume();
         heldKeys.set(event.code, key);
         key.classList.add("held");
+        recordNote(key.querySelector("span").textContent);
         play();
     });
     document.addEventListener("keyup", function (event) {
@@ -429,6 +525,7 @@
 
 
     document.getElementById("playButton").addEventListener("click", function (e) {
+        finishRecording(false);
         loop = true;
         playIt("whatToPlay");
         playIt("whatToPlay2");
@@ -437,12 +534,15 @@
         loop = false;
     })
     document.getElementById("playCm").addEventListener("click", function (e) {
+        finishRecording(false);
         document.getElementById("whatToPlay").value = "c3 c4 d#4 g4";
     })
     document.getElementById("playFm").addEventListener("click", function (e) {
+        finishRecording(false);
         document.getElementById("whatToPlay").value = "c3 c4 f4 g#4";
     })
     document.getElementById("playG").addEventListener("click", function (e) {
+        finishRecording(false);
         document.getElementById("whatToPlay").value = "g3 b3 d4 g4";
     })
 
