@@ -786,6 +786,34 @@
     var loop = false;
     var playbackTracks = null;
 
+    function parseSequenceToken(token, halfBeat) {
+        if (token === "q" || token === "s") return { control: token, ticks: 0, notes: [] };
+        var parts = token.split(":");
+        if (parts.length > 2) throw new Error("Invalid duration: " + token);
+        var ticks = halfBeat ? 480 : 960;
+        if (parts.length === 2) {
+            var duration = /^([1-9]\d*)(?:\/([1-9]\d*))?$/.exec(parts[1]);
+            var numerator = duration ? Number(duration[1]) : 0;
+            var denominator = duration && duration[2] ? Number(duration[2]) : 1;
+            ticks = numerator * (3840 / denominator);
+            if (!duration || 3840 % denominator !== 0 || !Number.isSafeInteger(ticks) || ticks <= 0) throw new Error("Invalid duration: " + token);
+        }
+        var notes = parts[0] === "r" ? [] : parts[0].split(",");
+        notes.forEach(function (note) {
+            var match = /^([a-g]#?)([1-8])$/.exec(note);
+            var names = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+            var index = match ? names.indexOf(match[1]) : -1;
+            if (index === -1 || !noteForPianoIndex((Number(match[2]) - 2) * 12 + index)) throw new Error("Invalid or out-of-range note: " + note);
+        });
+        return { ticks: ticks, notes: notes };
+    }
+
+    function durationFraction(ticks) {
+        var a = ticks, b = 3840;
+        while (b) { var remainder = a % b; a = b; b = remainder; }
+        return ticks / a + "/" + 3840 / a;
+    }
+
     function alignSequenceLoops() {
         var sequences = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
             var input = document.getElementById(inputId);
@@ -794,8 +822,9 @@
             var halfBeat = false;
             var length = 0;
             tokens.forEach(function (token) {
-                if (token === "q") halfBeat = !halfBeat;
-                else if (token !== "s") length += halfBeat ? 1 : 2;
+                var event = parseSequenceToken(token, halfBeat);
+                if (event.control === "q") halfBeat = !halfBeat;
+                else length += event.ticks;
             });
             return { input: input, tokens: tokens, length: length, halfBeat: halfBeat };
         });
@@ -806,8 +835,8 @@
         sequences.forEach(function (sequence) {
             if (sequence.halfBeat) sequence.tokens.push("q");
             var missing = length - sequence.length;
-            for (var i = 0; i < Math.floor(missing / 2); i++) sequence.tokens.push("r");
-            if (missing % 2) sequence.tokens.push("q", "r", "q");
+            for (var i = 0; i < Math.floor(missing / 960); i++) sequence.tokens.push("r");
+            if (missing % 960) sequence.tokens.push("r:" + durationFraction(missing % 960));
             sequence.input.value = sequence.tokens.join(" ");
         });
     }
@@ -847,6 +876,14 @@
                 return;
             }
             var token = track.tokens[track.index++];
+            var event;
+            try {
+                event = parseSequenceToken(token, track.halfBeat);
+            } catch (error) {
+                stopPlayback();
+                document.getElementById("trackFileStatus").textContent = "Could not play track: " + error.message;
+                return;
+            }
             if (token === "q") {
                 track.halfBeat = !track.halfBeat;
                 controlsRead++;
@@ -858,14 +895,14 @@
             }
             var tempo = recording ? recording.tempo : Number(document.getElementById("tempo").value);
             if (Number.isFinite(tempo) && tempo >= 30 && tempo <= 4000) track.beatMs = 60000 / tempo;
-            var duration = track.halfBeat ? track.beatMs / 2 : track.beatMs;
-            if (track.seekUntil !== undefined && track.dueAt + duration <= track.seekUntil) {
+            var duration = track.beatMs * event.ticks / 960;
+            if (track.seekUntil !== undefined && track.dueAt + duration <= track.seekUntil + 0.000001) {
                 track.dueAt += duration;
                 controlsRead = 0;
                 continue;
             }
             delete track.seekUntil;
-            if (token !== "r") token.split(",").forEach(function (name) {
+            event.notes.forEach(function (name) {
                 if (playFns[name]) playbackSources.add(playFns[name]());
             });
             queuePlayback(track, duration, track.dueAt + duration);
@@ -899,7 +936,12 @@
         if (audioCtx.state === "suspended") audioCtx.resume();
         restartMetronome();
         if (!playbackTracks || playbackTracks.every(function (track) { return track.done; })) {
-            alignSequenceLoops();
+            try {
+                alignSequenceLoops();
+            } catch (error) {
+                document.getElementById("trackFileStatus").textContent = "Could not play track: " + error.message;
+                return;
+            }
             var startedAt = performance.now();
             playbackTracks = ["whatToPlay", "whatToPlay2"].map(function (inputId) {
                 return { inputId: inputId, tokens: null, index: 0, halfBeat: false, beatMs: 60000 / Number(document.getElementById("tempo").value), timer: null, remaining: 0, dueAt: startedAt, done: false };
@@ -957,13 +999,7 @@
         [tracks.upper, tracks.lower].forEach(function (track) {
             if (!track) return;
             track.split(/\s+/).forEach(function (token) {
-                if (token === "q" || token === "r" || token === "s") return;
-                token.split(",").forEach(function (note) {
-                    var match = /^([a-g]#?)([1-8])$/.exec(note);
-                    var names = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
-                    var index = match ? names.indexOf(match[1]) : -1;
-                    if (index === -1 || !noteForPianoIndex((Number(match[2]) - 2) * 12 + index)) throw new Error("Invalid or out-of-range note: " + note);
-                });
+                parseSequenceToken(token, false);
             });
         });
         return tracks;
