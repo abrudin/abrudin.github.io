@@ -665,6 +665,7 @@
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
         document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 1–7). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". Sounds cover C1–D8, including notes outside the visible piano. V/B records the top/bottom line using the selected recording grid and starting tempo. Escape cancels recording and releases the keyboard.";
+        if (!keyboardGrabbed) return;
         keyboardLabels.forEach(function (text, index) {
             var key = keyboardPianoKey(index);
             if (!key) return;
