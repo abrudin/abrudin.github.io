@@ -276,11 +276,13 @@
 
     var keyboardGrabbed = false;
     var heldKeys = new Map();
+    var heldShifts = new Set();
     // Physical key positions also work for Swedish dead keys (such as ¨).
     var keyboardCodes = ["KeyA", "KeyW", "KeyS", "KeyE", "KeyD", "KeyF", "KeyT", "KeyG", "KeyY", "KeyH", "KeyU", "KeyJ", "KeyK", "KeyO", "KeyL", "KeyP", "Semicolon", "Quote", "BracketLeft", "BracketRight", "Backslash"];
+    var swedishKeyboardCodes = keyboardCodes.slice(0, -2).concat(["Backslash", "BracketRight"]);
     var keyboardLayouts = {
         english: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";", "'", "[", "]", "\\"],
-        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "¨", "'"]
+        swedish: ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", "Ö", "Ä", "Å", "'", "¨"]
     };
     var pianoKeys = Array.from(document.querySelectorAll("#clav > div"));
     var keyboardToggle = document.getElementById("keyboardToggle");
@@ -292,12 +294,17 @@
         heldKeys.clear();
     }
 
-    function updateKeyboardLabels() {
-        releaseKeyboardNotes();
+    function effectiveKeyboardOctave() {
+        var offset = (heldShifts.has("ShiftRight") ? 1 : 0) - (heldShifts.has("ShiftLeft") ? 1 : 0);
+        return Math.max(2, Math.min(5, Number(keyboardOctave.value) + offset));
+    }
+
+    function updateKeyboardLabels(preserveHeldNotes) {
+        if (preserveHeldNotes !== true) releaseKeyboardNotes();
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
-        var start = (Number(keyboardOctave.value) - 2) * 12;
+        var start = (effectiveKeyboardOctave() - 2) * 12;
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
-        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Escape releases the keyboard.";
+        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". Escape releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
             var label = document.createElement("span");
             label.className = "keyboard-label";
@@ -308,7 +315,8 @@
 
     function setKeyboardGrabbed(grabbed) {
         keyboardGrabbed = grabbed;
-        releaseKeyboardNotes();
+        heldShifts.clear();
+        updateKeyboardLabels();
         keyboardToggle.textContent = grabbed ? "Ungrab keyboard" : "Grab keyboard";
         keyboardToggle.setAttribute("aria-pressed", String(grabbed));
         if (grabbed && audioCtx.state === "suspended") audioCtx.resume();
@@ -317,8 +325,13 @@
     keyboardToggle.addEventListener("click", function () {
         setKeyboardGrabbed(!keyboardGrabbed);
     });
-    keyboardOctave.addEventListener("change", updateKeyboardLabels);
-    keyboardLayout.addEventListener("change", updateKeyboardLabels);
+    function keyboardSelectionChanged(event) {
+        updateKeyboardLabels();
+        if (keyboardGrabbed) event.target.blur();
+    }
+
+    keyboardOctave.addEventListener("change", keyboardSelectionChanged);
+    keyboardLayout.addEventListener("change", keyboardSelectionChanged);
     updateKeyboardLabels();
 
     document.addEventListener("keydown", function (event) {
@@ -331,6 +344,14 @@
         // Keep browser shortcuts and form controls usable while grabbed.
         if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing ||
             event.target.closest("input, textarea, select, [contenteditable]")) return;
+        if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
+            event.preventDefault();
+            if (!heldShifts.has(event.code)) {
+                heldShifts.add(event.code);
+                updateKeyboardLabels(true);
+            }
+            return;
+        }
         if (event.code === "KeyZ" || event.code === "KeyX") {
             event.preventDefault();
             if (event.repeat) return;
@@ -341,11 +362,12 @@
             }
             return;
         }
-        var index = keyboardCodes.indexOf(event.code);
+        var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
+        var index = codes.indexOf(event.code);
         if (index === -1) return;
         event.preventDefault();
         if (event.repeat || heldKeys.has(event.code)) return;
-        var key = pianoKeys[(Number(keyboardOctave.value) - 2) * 12 + index];
+        var key = pianoKeys[(effectiveKeyboardOctave() - 2) * 12 + index];
         var play = playFns[key.querySelector("span").textContent];
         if (!play) return;
         if (audioCtx.state === "suspended") audioCtx.resume();
@@ -354,6 +376,10 @@
         play();
     });
     document.addEventListener("keyup", function (event) {
+        if (heldShifts.delete(event.code)) {
+            updateKeyboardLabels(true);
+            return;
+        }
         var key = heldKeys.get(event.code);
         if (!key) return;
         key.classList.remove("held");
