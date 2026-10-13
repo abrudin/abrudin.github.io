@@ -1,0 +1,617 @@
+ABR 2
+# Frederic Chopin: Fantaisie-Impromptu, Op. 66 (complete)
+# Source: Mutopia-2009/09/05-1693, typeset by Guy D. Lederfein; public domain.
+# https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=1693
+# Converted from the source MIDI's separate upper/lower tracks.
+# Source tempo changes (168, 60, 90, 168, 120 BPM) are baked into durations.
+# Score-bar comments refer to the source, not the expanded playback duration.
+# Dynamics, pedal changes, and independent note releases are not represented.
+# MIDI timing is rounded to the nearest 1/960 of a quarter-note beat.
+title: Chopin - Fantaisie-Impromptu, Op. 66
+tempo: 168
+meter: 4/4
+repeat: no
+sustain: 0
+
+[upper]
+duration: 65/16
+# Score bar 1
+r |
+duration: 1/16
+# Score bar 5
+g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 6
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 7
+r a4 c#5 d#5 f#5 a5 c#6 d#6 b6 a6 g#6 f#6 e6 d#6 f#6 c#6 |
+# Score bar 8
+c6 d#6 a5 g#5 f#5 a5 e5 d#5 f#5 c#5 c5 d#5 a4 g#4 b4 a4:1/8 |
+# Score bar 9
+g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 10
+r g#4 a#4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 11
+d#5 e5 d#5 d5 d#5 b5 a#5 g#5 g5 e6 d#6 c#6 b5 a#5 g#5 g5 |
+# Score bar 12
+a#5 g#5 b5 d5 e5 d#5 g#5 a#4 c#5 b4 d#5 g4 a#4 g#4 g4 g#4 |
+# Score bar 13
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 14
+c#4 c#5 f#4 a4 d#4 d#5 f#4 a4 e4 e5 g#4 b4 g#4 g#5 b4 e5 |
+# Score bar 15
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 16
+f4 f5 b4 d#5 f#4 f#5 b4 d#5 a4 a5 b4 e5 g#4 g#5 b4 e5 |
+# Score bar 17
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 18
+c#4 c#5 f#4 a4 d#4 d#5 f#4 a4 e4 e5 g#4 b4 g#4 g#5 b4 e5 |
+# Score bar 19
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 d#5 d#6 f#5 a5 c#5 c#6 f#5 a5 |
+# Score bar 20
+c#5 c#6 d#5 f#5 c5 c6 d#5 f#5 c5 c6 d#5 f#5 c5 c6 d#5 f#5 |
+# Score bar 21
+c5 c6 d#5 f#5 b4 b5 d#5 f#5 b4 b5 d#5 f#5 a#4 a#5 d#5 f#5 |
+# Score bar 22
+a#4 a#5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 |
+# Score bar 23
+c5 c6 d#5 f#5 b4 b5 d#5 f#5 b4 b5 d#5 f#5 a#4 a#5 d#5 f#5 |
+# Score bar 24
+a#4 a#5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 g#4 g#5 d#5 f#5 |
+# Score bar 25
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 26
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 27
+r a4 c#5 d#5 f#5 a5 c#6 d#6 b6 a6 g#6 f#6 e6 d#6 f#6 c#6 |
+# Score bar 28
+c6 d#6 a5 g#5 f#5 a5 e5 d#5 f#5 c#5 c5 d#5 a4 g#4 b4 a4:1/8 |
+# Score bar 29
+g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 30
+e5 d#5 e5 d#5 d5 d#5 f#5 a5 f#5 f5 f#5 f5 e5 f5 g#5 c#6 |
+# Score bar 31
+r c#5 d5 c#5 c5 c#5 f#5 a5 f#5 f5 f#5 f5 e5 f5 g#5 c#6 |
+# Score bar 32
+g#5 f#5 g#5 f#5 f5 f#5 a5 c#6 a5 g#5 a5 g#5 g5 g#5 c6 d#6 |
+# Score bar 33
+g#5 a5 g#5 g5 g#5 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 f#5 |
+# Score bar 34
+e5 f#5 e5 d#5 e5 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 f#5 |
+# Score bar 35
+g#5 r g#6 g6 f#6 f6 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 |
+# Score bar 36
+f#5 f5 e5 d#5 d5 c#5 c5 b4 a#4 a4 g#4 g4 f#4 e4 d#4 c#4 |
+# Score bar 37
+g#3:1/8 r:1/8 a6 g#6 e7 e6 f#6 e6 c#7 c#6 d#6 c#6 g#6 g#5 |
+# Score bar 38
+a5 g#5 e6 e5 f#5 e5 c#6 c#5 d#5 c#5 g#5 g#4 a4 g#4 e5 e4 |
+# Score bar 39
+f#4 e4 c#5 c#4 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 a4 a3 |
+# Score bar 40
+d#4 c#4 g#4 g#3 d#4 c#4 g4 g3 d#4 c#4 g#4 g#3 d#4 c4 g#4 g#3 |
+duration: 28/5
+# Score bar 41
+r |
+duration: 7/30
+# Score bar 43
+g#4:14/15 a#4 g#4 c#5 d#5 |
+duration: 7/15
+# Score bar 44
+f5:14/15 g#5 g#4 |
+# Score bar 45
+f#5 f5 d#5 f5:7/20 c#5:7/60 |
+duration: 14/15
+# Score bar 46
+g#4 a#4:28/15 |
+duration: 7/30
+# Score bar 47
+b4 a#4 d#5 f5 |
+duration: 7/15
+# Score bar 48
+f#5 f5 d#5 f5 |
+duration: 47/3840
+# Score bar 49
+c#5:563/640 c5 r:1/768 c#5:23/1920 r:1/768 d#5 r:1/960 c#5 r:1/768 f5:7/10 d#5:7/30 |
+duration: 28/15
+# Score bar 50
+d#5 |
+duration: 7/30
+# Score bar 51
+g#4:14/15 a#4 g#4 c#5 d#5 |
+duration: 7/15
+# Score bar 52
+f5:14/15 g#5 g#4 |
+duration: 49/1920
+# Score bar 53
+f#5:7/15 f5:7/15 d#5:231/640 f5 r:1/960 d#5 c#5 r:1/768 d#5 r:1/768 f5:7/20 c#5:7/60 |
+duration: 14/15
+# Score bar 54
+g#4 a#4:28/15 |
+duration: 7/30
+# Score bar 55
+b4 a#4 d#5 f5 |
+duration: 7/15
+# Score bar 56
+f#5 f5 d#5 f5 |
+duration: 7/120
+# Score bar 57
+c#5:7/10 g4 g#4 a#4 g#4 f5:7/10 d#5:7/30 |
+duration: 7/30
+# Score bar 58
+d#5:14/15 c#5:7/15 r g#5 |
+duration: 7/20
+# Score bar 59
+g#4:14/15 a#4 a4:7/60 a#4 c5:7/60 |
+duration: 1/768
+# Score bar 60
+g#4:7/30 r:7/30 c6:115/192 a#5:509/3840 r g#5:127/960 r e5:509/3840 c#5:127/960 r a#4:51/256 r g#5:21/320 r |
+duration: 7/20
+# Score bar 61
+d#4:563/640 c5:67/1280 r:1/960 a#4 a4:7/60 a#4 d#5:7/60 |
+duration: 7/15
+# Score bar 62
+g#4 r a#4 c#5:299/1920 c5:199/1280 a#4:199/1280 |
+duration: 7/30
+# Score bar 63
+g#4:14/15 a#4 g#4 c#5 d#5 |
+duration: 7/15
+# Score bar 64
+f5:14/15 g#5 g#4 |
+duration: 49/1920
+# Score bar 65
+f#5:7/15 f5:7/15 d#5:231/640 f5 r:1/768 d#5 c#5 r:1/768 d#5 r:1/960 f5:7/20 c#5:7/60 |
+duration: 14/15
+# Score bar 66
+g#4 a#4:28/15 |
+duration: 7/30
+# Score bar 67
+b4 a#4 d#5 f5 |
+duration: 7/15
+# Score bar 68
+f#5 f5 d#5 f5 |
+duration: 7/120
+# Score bar 69
+c#5:7/10 g4 g#4 a#4 g#4 f5:7/10 d#5:7/30 |
+duration: 7/30
+# Score bar 70
+d#5:14/15 c#5:7/15 r g#5 |
+duration: 7/20
+# Score bar 71
+g#4:14/15 a#4 a4:7/60 a#4 c5:7/60 |
+duration: 509/3840
+# Score bar 72
+g#4:7/30 r:7/30 c6:767/1280 a#5 r:1/960 g#5 r:1/768 e5:127/960 c#5 r:1/768 a#4:51/256 r:1/768 g#5:21/320 r:1/960 |
+duration: 7/20
+# Score bar 73
+d#4:3379/3840 c5:67/1280 r:1/960 a#4 a4:7/60 a#4 d#5:7/60 |
+duration: 7/15
+# Score bar 74
+g#4 r a#4 c#5:299/1920 c5:199/1280 a#4:199/1280 |
+duration: 7/30
+# Score bar 75
+g#4:14/15 a#4 g#4 c#5 d#5 |
+duration: 7/15
+# Score bar 76
+f5:14/15 g#5 g#4 |
+duration: 49/1920
+# Score bar 77
+f#5:7/15 f5:7/15 d#5:231/640 f5 r:1/768 d#5 c#5 r:1/768 d#5 r:1/960 f5:7/20 c#5:7/60 |
+duration: 14/15
+# Score bar 78
+g#4 a#4:28/15 |
+duration: 7/30
+# Score bar 79
+b4 a#4 d#5 f5 |
+duration: 7/15
+# Score bar 80
+f#5 f5 d#5 f5 |
+duration: 7/120
+# Score bar 81
+c#5:7/10 g4 g#4 a#4 g#4 f5:7/10 d#5:7/30 |
+duration: 28/15
+# Score bar 82
+d#5 |
+duration: 1/16
+# Score bar 83
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 84
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 85
+r a4 c#5 d#5 f#5 a5 c#6 d#6 b6 a6 g#6 f#6 e6 d#6 f#6 c#6 |
+# Score bar 86
+c6 d#6 a5 g#5 f#5 a5 e5 d#5 f#5 c#5 c5 d#5 a4 g#4 b4 a4:1/8 |
+# Score bar 87
+g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 88
+r g#4 a#4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 89
+d#5 e5 d#5 d5 d#5 b5 a#5 g#5 g5 e6 d#6 c#6 b5 a#5 g#5 g5 |
+# Score bar 90
+a#5 g#5 b5 d5 e5 d#5 g#5 a#4 c#5 b4 d#5 g4 a#4 g#4 g4 g#4 |
+# Score bar 91
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 92
+c#4 c#5 f#4 a4 d#4 d#5 f#4 a4 e4 e5 g#4 b4 g#4 g#5 b4 e5 |
+# Score bar 93
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 94
+f4 f5 b4 d#5 f#4 f#5 b4 d#5 a4 a5 b4 e5 g#4 g#5 b4 e5 |
+# Score bar 95
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 f4 f5 c5 c#5 f#4 f#5 c5 c#5 |
+# Score bar 96
+c#4 c#5 f#4 a4 d#4 d#5 f#4 a4 e4 e5 g#4 b4 g#4 g#5 b4 e5 |
+# Score bar 97
+g#4 g#5 c5 c#5 f#4 f#5 c5 c#5 d#5 d#6 f#5 a5 c#5 c#6 f#5 a5 |
+# Score bar 98
+c#5 c#6 d#5 f#5 c5 c6 d#5 f#5 c5 c6 d#5 f#5 c5 c6 d#5 f#5 |
+# Score bar 99
+c5 c6 d#5 f#5 b4 b5 d#5 f#5 b4 b5 d#5 f#5 a#4 a#5 d#5 f#5 |
+# Score bar 100
+a#4 a#5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 |
+# Score bar 101
+c5 c6 d#5 f#5 b4 b5 d#5 f#5 b4 b5 d#5 f#5 a#4 a#5 d#5 f#5 |
+# Score bar 102
+a#4 a#5 d#5 f#5 a4 a5 d#5 f#5 a4 a5 d#5 f#5 g#4 g#5 d#5 f#5 |
+# Score bar 103
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 104
+r g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 105
+r a4 c#5 d#5 f#5 a5 c#6 d#6 b6 a6 g#6 f#6 e6 d#6 f#6 c#6 |
+# Score bar 106
+c6 d#6 a5 g#5 f#5 a5 e5 d#5 f#5 c#5 c5 d#5 a4 g#4 b4 a4:1/8 |
+# Score bar 107
+g#4 a4 g#4 g4 g#4 c#5 e5 d#5 c#5 d#5 c#5 c5 c#5 e5 g#5 |
+# Score bar 108
+e5 d#5 e5 d#5 d5 d#5 f#5 a5 f#5 f5 f#5 f5 e5 f5 g#5 c#6 |
+# Score bar 109
+r c#5 d5 c#5 c5 c#5 f#5 a5 f#5 f5 f#5 f5 e5 f5 g#5 c#6 |
+# Score bar 110
+g#5 f#5 g#5 f#5 f5 f#5 a5 c#6 a5 g#5 a5 g#5 g5 g#5 c6 d#6 |
+# Score bar 111
+g#5 a5 g#5 g5 g#5 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 f#5 |
+# Score bar 112
+e5 f#5 e5 d#5 e5 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 f#5 |
+# Score bar 113
+g#5 r g#6 g6 f#6 f6 e6 d#6 d6 c#6 c6 b5 a#5 a5 g#5 g5 |
+# Score bar 114
+f#5 f5 e5 d#5 d5 c#5 c5 b4 a#4 a4 g#4 g4 f#4 e4 d#4 c#4 |
+# Score bar 115
+g#3:1/8 r:1/8 a6 g#6 e7 e6 f#6 e6 c#7 c#6 d#6 c#6 g#6 g#5 |
+# Score bar 116
+a5 g#5 e6 e5 f#5 e5 c#6 c#5 d#5 c#5 g#5 g#4 a4 g#4 e5 e4 |
+# Score bar 117
+f#4 e4 c#5 c#4 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 a4 a3 |
+# Score bar 118
+d#4 c#4 g#4 g#3 d#4 c#4 g4 g3 d#4 c#4 g#4 g#3 d#4 c4 g#4 g#3 |
+# Score bar 119
+d#4 c#4 g#4 g#3 a4 g#4 e5 e4 a4 g#4 e5 e4 a4 g#4 d#5 d#4 |
+# Score bar 120
+a4 g#4 d#5 d#4 a4 g#4 c#5 c#4 e4 d#4 g#4 g#3 e4 d#4 g#4 g#3 |
+# Score bar 121
+d#4 c#4 g#4 g#3 a4 g#4 e5 e4 a4 g#4 e5 e4 a4 g#4 d#5 d#4 |
+# Score bar 122
+a4 g#4 d#5 d#4 a4 g#4 c#5 c#4 e4 d#4 g#4 g#3 e4 d#4 g#4 g#3 |
+# Score bar 123
+d#4 c#4 g#4 g#3 a4 g#4 e5 e4 f#4 e4 c#5 c#4 a4 g#4 e5 e4 |
+# Score bar 124
+d#4 c#4 g#4 g#3 a4 g#4 e5 e4 f#4 e4 c#5 c#4 a4 g#4 e5 e4 |
+# Score bar 125
+f#4 e4 c#5 c#4 a4 g#4 c#5 c#4 f#4 e4 c#5 c#4 a4 g#4 c#5 c#4 |
+# Score bar 126
+f#4 e4 c#5 c#4 a4 g#4 c#5 c#4 f#4 e4 c#5 c#4 a4 g#4 c#5 c#4 |
+# Score bar 127
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 128
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 129
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 130
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 131
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 132
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 133
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 134
+d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 d#4 c#4 g#4 g#3 |
+# Score bar 135
+d#4 c#4 g#4 f3 d#4 c#4 g#4 f3 d#4 c#4 g#4 f3 d#4 c#4 g#4 f3 |
+duration: 7/80
+# Score bar 136
+f4 d#4 g#4 g#3 f4 d#4 g#4 g#3 f4 d#4 g#4 g#3 f4 d#4 g#4 g#3 |
+duration: 7/5
+# Score bar 137
+f#3,g#3,c4,d#4 |
+# Score bar 138
+f3,c#4 |
+
+[lower]
+duration: 2
+# Score bar 1
+g#2,g#3 |
+duration: 1/12
+# Score bar 3
+c#2,c#3 g#3 c#4 e4 c#4 g#3 c#3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 4
+c#3 g#3 c#4 e4 c#4 g#3 c#3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 5
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 6
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 7
+d#3 a3 c#4 f#4 c#4 a3 f#3 c#4 d#4 a4 d#4 c#4 |
+# Score bar 8
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 9
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 10
+c#3 g#3 a#3 e4 a#3 g#3 e3 g#3 a#3 c#4 a#3 g#3 |
+# Score bar 11
+d#3 g#3 b3 d#4 b3 g#3 d#3 a#3 c#4 g4 c#4 a#3 |
+# Score bar 12
+g#2 d#3 g#3 b3 g#3 d#3 g#2 d#3 g#3 b3 g#3 d#3 |
+# Score bar 13
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 14
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 15
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 16
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 17
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 18
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 19
+a2 c#3 f#3 a3 f#3 c#3 a2 d#3 f#3 a3 f#3 d#3 |
+# Score bar 20
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 21
+a2 d#3 f#3 b3 f#3 d#3 a#2 d#3 f#3 a#3 f#3 d#3 |
+# Score bar 22
+c3 d#3 f#3 a3 f#3 d#3 c3 d#3 f#3 a3 f#3 d#3 |
+# Score bar 23
+a2 d#3 f#3 b3 f#3 d#3 a#2 d#3 f#3 a#3 f#3 d#3 |
+# Score bar 24
+b2 d#3 f#3 a3 f#3 d#3 c3 d#3 f#3 g#3 f#3 d#3 |
+# Score bar 25
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 26
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 27
+d#3 a3 c#4 f#4 c#4 a3 f#3 c#4 d#4 a4 d#4 c#4 |
+# Score bar 28
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 29
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 30
+f#3 c#4 d#4 a4 d#4 c#4 g#3 c#4 f4 b4 f4 c#4 |
+# Score bar 31
+a3 c#4 f#4 a4 f#4 c#4 g#3 c#4 f4 b4 f4 c#4 |
+# Score bar 32
+a3 c#4 f#4 a4 f#4 c#4 c3 f#3 g#3 d#4 g#3 f#3 |
+# Score bar 33
+c#3 g#3 c#4 e4 c#4 g#3 d#3 g#3 c4 f#4 c4 g#3 |
+# Score bar 34
+c#3 g#3 c#4 e4 c#4 g#3 f#3 c#4 d#4 a4 d#4 c#4 |
+duration: 1/8
+# Score bar 35
+g#3,c#4,e4,g#4 r:3/8 g3,c#4,e4,a4:1/4 r:5/4 |
+duration: 1/4
+# Score bar 37
+g#1,g#2:1/8 r:1/8 e4,e5 c#4,c#5 g#3,g#4 |
+# Score bar 38
+e3,e4 c#3,c#4 g#2,g#3 e2,e3 |
+# Score bar 39
+c#2,c#3 g#1,g#2 g#1,g#2 a1,a2 |
+# Score bar 40
+g#1,g#2 g1,g2 g#1,g#2:1/2 |
+duration: 7/30
+# Score bar 41
+c#2 g#2 c#3 f3 g#3 c#4 f4 c#4 g#3 f3 c#3 g#2 |
+# Score bar 42
+c#2 g#2 c#3 f3 g#3 c#4 f4 c#4 g#3 f3 c#3 g#2 |
+duration: 199/1280
+# Score bar 43
+c#2 g#3 c4:299/1920 d#4 c4 g#3:299/1920 c#3 g#3 c4:299/1920 f#4 c4 g#3:299/1920 |
+# Score bar 44
+c#3 g#3 c#4:299/1920 f4 c#4 g#3:299/1920 c#3 g#3 f4:299/1920 r f4 g#3:299/1920 |
+# Score bar 45
+f#4 d#4 g#3:299/1920 f4 c#4 g#3:299/1920 d#4 c4 g#3:299/1920 c#4 g#3 f3:299/1920 |
+# Score bar 46
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 f#2 f#3 a#3:299/1920 c#4 a#3 f#3:299/1920 |
+# Score bar 47
+a#2 f3 a#3:299/1920 d4 a#3 f3:299/1920 a#2 a#3 d4:299/1920 g#4 d4 a#3:299/1920 |
+# Score bar 48
+d#3 f#4 a#3:299/1920 f3 f4 a3:299/1920 f#3 d#4 a#3:299/1920 g#3 f#4 c4:299/1920 |
+# Score bar 49
+c#3 g#3 c#4:299/1920 f4 c#4 g#3:299/1920 d#3 g3 c#4:299/1920 d#4 c#4 g3:299/1920 |
+# Score bar 50
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 g#2 d#3 f#3:299/1920 a#3 f#3 d#3:299/1920 |
+# Score bar 51
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 g#2 g#3 c4:299/1920 f#4 c4 g#3:299/1920 |
+# Score bar 52
+c#3 g#3 c#4:299/1920 f4 c#4 g#3:299/1920 c#3 g#3 f4:299/1920 r f4 g#3:299/1920 |
+# Score bar 53
+f#4 d#4 g#3:299/1920 f4 c#4 g#3:299/1920 d#4 c4 g#3:299/1920 c#4 g#3 f3:299/1920 |
+# Score bar 54
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 f#2 f#3 a#3:299/1920 c#4 a#3 f#3:299/1920 |
+# Score bar 55
+a#2 f3 a#3:299/1920 d4 a#3 f3:299/1920 a#2 a#3 d4:299/1920 g#4 d4 a#3:299/1920 |
+# Score bar 56
+d#3 f#4 a#3:299/1920 f3 f4 a3:299/1920 f#3 d#4 a#3:299/1920 g#3 f#4 c4:299/1920 |
+# Score bar 57
+c#3 g#3 c#4:299/1920 f4 c#4 g#3:299/1920 c#3 g#3 c4:299/1920 f#4 c4 g#3:299/1920 |
+# Score bar 58
+c#3 g#3 c4:299/1920 f#4 c4 g#3:299/1920 c#3 g#3 c#4:299/1920 f4 c#4 g#3:299/1920 |
+# Score bar 59
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 g#2 d#3 g3:299/1920 c#4 g3 d#3:299/1920 |
+# Score bar 60
+g#2 d#3 g#3:299/1920 c4 g#3 d#3:299/1920 c#3 g#3 c#4:299/1920 e4 c#4 g#3:299/1920 |
+# Score bar 61
+d#2 d#3 g#3:299/1920 c4 g#3 d#3 d#2:299/1920 d#3 g3 c#4:299/1920 g3 d#3 |
+# Score bar 62
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 f#2:299/1920 f#3 a#3 c#4:299/1920 a#3 f#3 |
+# Score bar 63
+g#2:299/1920 g#3 c4 d#4:299/1920 c4 g#3 d#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 |
+# Score bar 64
+c#3:299/1920 g#3 c#4 f4:299/1920 c#4 g#3 c#3:299/1920 g#3 f4 r:299/1920 f4 g#3 |
+# Score bar 65
+f#4:299/1920 d#4 g#3 f4:299/1920 c#4 g#3 d#4:299/1920 c4 g#3 c#4:299/1920 g#3 f3 |
+# Score bar 66
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 f#2:299/1920 f#3 a#3 c#4:299/1920 a#3 f#3 |
+# Score bar 67
+a#2:299/1920 f3 a#3 d4:299/1920 a#3 f3 a#2:299/1920 a#3 d4 g#4:299/1920 d4 a#3 |
+# Score bar 68
+d#3:299/1920 f#4 a#3 f3:299/1920 f4 a3 f#3:299/1920 d#4 a#3 g#3:299/1920 f#4 c4 |
+# Score bar 69
+c#3:299/1920 g#3 c#4 f4:299/1920 c#4 g#3 c#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 |
+# Score bar 70
+c#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 c#3:299/1920 g#3 c#4 f4:299/1920 c#4 g#3 |
+# Score bar 71
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 g#2:299/1920 d#3 g3 c#4:299/1920 g3 d#3 |
+# Score bar 72
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 c#3:299/1920 g#3 c#4 e4:299/1920 c#4 g#3 |
+# Score bar 73
+d#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 d#2:299/1920 d#3 g3 c#4:299/1920 g3 d#3 |
+# Score bar 74
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 f#2:299/1920 f#3 a#3 c#4:299/1920 a#3 f#3 |
+# Score bar 75
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 g#2:299/1920 g#3 c4 f#4:299/1920 c4 g#3 |
+# Score bar 76
+c#3:299/1920 g#3 c#4 f4:299/1920 c#4 g#3 c#3:299/1920 g#3 f4 r:299/1920 f4 g#3 |
+# Score bar 77
+f#4:299/1920 d#4 g#3 f4:299/1920 c#4 g#3 d#4:299/1920 c4 g#3 c#4:299/1920 g#3 f3 |
+# Score bar 78
+g#2:299/1920 d#3 g#3 c4:299/1920 g#3 d#3 f#2:299/1920 f#3 a#3 c#4:299/1920 a#3 f#3 |
+# Score bar 79
+a#2:299/1920 f3 a#3 d4:299/1920 a#3 f3 a#2:299/1920 a#3 d4 g#4:299/1920 d4 a#3 |
+# Score bar 80
+d#3:299/1920 f#4 a#3 f3:299/1920 f4 a3 f#3:299/1920 d#4 a#3 g#3:299/1920 f#4 c4 |
+# Score bar 81
+c#3:299/1920 g#3 c#4 f4:299/1920 c#4 g#3 c#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 |
+# Score bar 82
+c#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 c#3:299/1920 g#3 c4 f#4:299/1920 c4 g#3 |
+duration: 1/12
+# Score bar 83
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 84
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 85
+d#3 a3 c#4 f#4 c#4 a3 f#3 c#4 d#4 a4 d#4 c#4 |
+# Score bar 86
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 87
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 88
+c#3 g#3 a#3 e4 a#3 g#3 e3 g#3 a#3 c#4 a#3 g#3 |
+# Score bar 89
+d#3 g#3 b3 d#4 b3 g#3 d#3 a#3 c#4 g4 c#4 a#3 |
+# Score bar 90
+g#2 d#3 g#3 b3 g#3 d#3 g#2 d#3 g#3 b3 g#3 d#3 |
+# Score bar 91
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 92
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 93
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 94
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 95
+a2 c#3 f#3 a3 f#3 c#3 a2 c#3 f#3 a3 f#3 c#3 |
+# Score bar 96
+b2 f#3 a3 b3 a3 f#3 e2 b2 e3 g#3 e3 b2 |
+# Score bar 97
+a2 c#3 f#3 a3 f#3 c#3 a2 d#3 f#3 a3 f#3 d#3 |
+# Score bar 98
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 99
+a2 d#3 f#3 b3 f#3 d#3 a#2 d#3 f#3 a#3 f#3 d#3 |
+# Score bar 100
+c3 d#3 f#3 a3 f#3 d#3 c3 d#3 f#3 a3 f#3 d#3 |
+# Score bar 101
+a2 d#3 f#3 b3 f#3 d#3 a#2 d#3 f#3 a#3 f#3 d#3 |
+# Score bar 102
+b2 d#3 f#3 a3 f#3 d#3 c3 d#3 f#3 g#3 f#3 d#3 |
+# Score bar 103
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 104
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 105
+d#3 a3 c#4 f#4 c#4 a3 f#3 c#4 d#4 a4 d#4 c#4 |
+# Score bar 106
+g#2 d#3 f#3 c4 f#3 d#3 g#2 d#3 f#3 c4 f#3 d#3 |
+# Score bar 107
+c#3 g#3 c#4 e4 c#4 g#3 e3 g#3 c#4 e4 c#4 g#3 |
+# Score bar 108
+f#3 c#4 d#4 a4 d#4 c#4 g#3 c#4 f4 b4 f4 c#4 |
+# Score bar 109
+a3 c#4 f#4 a4 f#4 c#4 g#3 c#4 f4 b4 f4 c#4 |
+# Score bar 110
+a3 c#4 f#4 a4 f#4 c#4 c3 f#3 g#3 d#4 g#3 f#3 |
+# Score bar 111
+c#3 g#3 c#4 e4 c#4 g#3 d#3 g#3 c4 f#4 c4 g#3 |
+# Score bar 112
+c#3 g#3 c#4 e4 c#4 g#3 f#3 c#4 d#4 a4 d#4 c#4 |
+duration: 1/8
+# Score bar 113
+g#3,c#4,e4,g#4 r:3/8 g3,c#4,e4,a4:1/4 r:5/4 |
+duration: 1/4
+# Score bar 115
+g#1,g#2:1/8 r:1/8 e4,e5 c#4,c#5 g#3,g#4 |
+# Score bar 116
+e3,e4 c#3,c#4 g#2,g#3 e2,e3 |
+# Score bar 117
+c#2,c#3 g#1,g#2 g#1,g#2 a1,a2 |
+# Score bar 118
+g#1,g#2 g1,g2 g#1,g#2:1/2 |
+duration: 1/8
+# Score bar 119
+c#2 e3 c#3 g#2 c#2 f#3 c3 g#2 |
+# Score bar 120
+c#2 e3 c#3 g#2 c#2 f#3 c3 g#2 |
+# Score bar 121
+c#2 e3 c#3 g#2 c#2 f#3 c3 g#2 |
+# Score bar 122
+c#2 e3 c#3 g#2 c#2 f#3 c3 g#2 |
+# Score bar 123
+c#2 e3 c#3 g#2 c#2 g#3 c#3 g#2 |
+# Score bar 124
+c#2 e3 c#3 g#2 c#2 g#3 c#3 g#2 |
+# Score bar 125
+c#2 e3 c#3 g#2 c#2 e3 c#3 g#2 |
+# Score bar 126
+c#2 e3 c#3 g#2 c#2 e3 c#3 g#2 |
+duration: 1/4
+# Score bar 127
+c#2 r:7/4 |
+duration: 1
+# Score bar 129
+c#2,g#2 |
+duration: 1/4
+# Score bar 130
+a#2 g#2 c#3 d#3 |
+duration: 1
+# Score bar 131
+f3 |
+# Score bar 132
+g#3 |
+duration: 1/2
+# Score bar 133
+f#3 f3 |
+duration: 1/4
+# Score bar 134
+d#3:1/2 f3 c#3 |
+duration: 1
+# Score bar 135
+g#2 |
+duration: 7/5
+# Score bar 136
+g#1,g#2 |
+# Score bar 137
+c#2,g#2 |
+# Score bar 138
+c#2,g#2 |

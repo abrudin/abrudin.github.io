@@ -1,0 +1,660 @@
+ABR 2
+# Joplin - Maple Leaf Rag (complete source MIDI transcription)
+# Source: Mutopia-2011/11/13-23, typeset by Chris Sawer; public domain.
+# https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=23
+# Note attacks and rests converted from separate upper/lower MIDI tracks.
+# MIDI timing rounded to the nearest 1/960 quarter-note beat.
+# Dynamics, pedal changes, and independent note releases are not represented.
+# Written repeats are unfolded in the source MIDI.
+title: Joplin - Maple Leaf Rag
+tempo: 120
+meter: 2/4
+repeat: no
+sustain: -0.6
+
+[upper]
+duration: 1/16
+# MIDI bar 1
+r:3/16 g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 2
+g4 d#4,d#5 g4 a#4 d#4,d#5:5/16 |
+# MIDI bar 3
+r g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 4
+g4 d#4,d#5 g4 a#4 d#4,d#5:3/16 |
+# MIDI bar 5
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+# MIDI bar 6
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+duration: 11/16
+# MIDI bar 7
+r |
+duration: 1/16
+# MIDI bar 8
+g#4 b4 g#5 r g#5 |
+duration: 1/8
+# MIDI bar 9
+b5:1/16 g#6:1/16 g#5,g#6 g#5,g#6 g#5,g#6 |
+duration: 1/16
+# MIDI bar 10
+g#5,g#6 g#5,g#6:1/8 d#6 f6 c6 d#6 g#5,f6:1/8 |
+# MIDI bar 11
+e5,g#5:1/8 a#5 e5,b5 g#5 a#5 d#5,c6:1/8 |
+# MIDI bar 12
+g#5 d#5,c6 g#5 d#5,a#5:1/8 d#5,g#5:1/8 |
+duration: 1/8
+# MIDI bar 13
+r:1/16 g#4,g#5:3/16 g#4,g#5 g#4,g#5 |
+duration: 1/16
+# MIDI bar 14
+g#4,g#5 g#4,g#5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 15
+e4,g#4:1/8 a#4 e4,b4 g#4 a#4 d#4,c5:1/8 |
+# MIDI bar 16
+g#4 d#4,c5 g#4 d#4,a#4:1/8 d#4,g#4:1/8 |
+# MIDI bar 17
+r:3/16 g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 18
+g4 d#4,d#5 g4 a#4 d#4,d#5:5/16 |
+# MIDI bar 19
+r g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 20
+g4 d#4,d#5 g4 a#4 d#4,d#5:3/16 |
+# MIDI bar 21
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+# MIDI bar 22
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+duration: 11/16
+# MIDI bar 23
+r |
+duration: 1/16
+# MIDI bar 24
+g#4 b4 g#5 r g#5 |
+duration: 1/8
+# MIDI bar 25
+b5:1/16 g#6:1/16 g#5,g#6 g#5,g#6 g#5,g#6 |
+duration: 1/16
+# MIDI bar 26
+g#5,g#6 g#5,g#6:1/8 d#6 f6 c6 d#6 g#5,f6:1/8 |
+# MIDI bar 27
+e5,g#5:1/8 a#5 e5,b5 g#5 a#5 d#5,c6:1/8 |
+# MIDI bar 28
+g#5 d#5,c6 g#5 d#5,a#5:1/8 d#5,g#5:1/8 |
+duration: 1/8
+# MIDI bar 29
+r:1/16 g#4,g#5:3/16 g#4,g#5 g#4,g#5 |
+duration: 1/16
+# MIDI bar 30
+g#4,g#5 g#4,g#5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 31
+e4,g#4:1/8 a#4 e4,b4 g#4 a#4 d#4,c5:1/8 |
+# MIDI bar 32
+g#4 d#4,c5 g#4 d#4,a#4:1/8 d#4,g#4:1/8 |
+# MIDI bar 33
+r:3/16 g5 d#5,d#6 g5 a#5 d5,d6:1/8 |
+# MIDI bar 34
+g5 c#5,c#6 g5 a#5 c5,c6:1/8 d#5 |
+# MIDI bar 35
+a#4,a#5 d#5 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+# MIDI bar 36
+c5 g#4,g#5 c5 d#5 f4,f5:1/8 c5 |
+# MIDI bar 37
+f4,f5:1/8 r d#5 g4,g5 a#4 c#5 f4,f5:1/8 |
+# MIDI bar 38
+d#5 g4,g5 a#4 c#5 f4,f5:1/8 c#5 |
+# MIDI bar 39
+f4,f5:1/8 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+# MIDI bar 40
+c5 g#4,g#5 c5 d#5 f4,f5:1/8 c5 |
+# MIDI bar 41
+f4,f5:1/8 r g5 d#5,d#6 g5 a#5 d5,d6:1/8 |
+# MIDI bar 42
+g5 c#5,c#6 g5 a#5 c5,c6:1/8 d#5 |
+# MIDI bar 43
+a#4,a#5 d#5 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+duration: 1/8
+# MIDI bar 44
+c5:1/16 g#4,g#5 g#4,g#5 g4,g5 |
+duration: 1/16
+# MIDI bar 45
+f#4,f#5:1/8 r f4 a4 c5 f5 c5 |
+# MIDI bar 46
+a4 f4 r f4 a#4 c#5 f4,f5:1/8 |
+duration: 1/8
+# MIDI bar 47
+f4,a#4,c#5 d4,f4,g#4,c5 r:1/16 d4,f4,g#4,c5:1/16 r:1/16 c#4,a#4 |
+# MIDI bar 48
+d#4:1/16 c4,g#4 d#4,d#5 d#4,d#5 |
+duration: 1/16
+# MIDI bar 49
+d#4,d#5:1/8 r g5 d#5,d#6 g5 a#5 d5,d6:1/8 |
+# MIDI bar 50
+g5 c#5,c#6 g5 a#5 c5,c6:1/8 d#5 |
+# MIDI bar 51
+a#4,a#5 d#5 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+# MIDI bar 52
+c5 g#4,g#5 c5 d#5 f4,f5:1/8 c5 |
+# MIDI bar 53
+f4,f5:1/8 r d#5 g4,g5 a#4 c#5 f4,f5:1/8 |
+# MIDI bar 54
+d#5 g4,g5 a#4 c#5 f4,f5:1/8 c#5 |
+# MIDI bar 55
+f4,f5:1/8 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+# MIDI bar 56
+c5 g#4,g#5 c5 d#5 f4,f5:1/8 c5 |
+# MIDI bar 57
+f4,f5:1/8 r g5 d#5,d#6 g5 a#5 d5,d6:1/8 |
+# MIDI bar 58
+g5 c#5,c#6 g5 a#5 c5,c6:1/8 d#5 |
+# MIDI bar 59
+a#4,a#5 d#5 r c5 g#4,g#5 c5 d#5 f4,f5:1/8 |
+duration: 1/8
+# MIDI bar 60
+c5:1/16 g#4,g#5 g#4,g#5 g4,g5 |
+duration: 1/16
+# MIDI bar 61
+f#4,f#5:1/8 r f4 a4 c5 f5 c5 |
+# MIDI bar 62
+a4 f4 r f4 a#4 c#5 f4,f5:1/8 |
+duration: 1/8
+# MIDI bar 63
+f4,a#4,c#5 d4,f4,g#4,c5 r:1/16 d4,f4,g#4,c5:1/16 r:1/16 c#4,a#4 |
+duration: 1/16
+# MIDI bar 64
+d#4 r g#4 c5 d#5 g#4,g#5:1/8 |
+# MIDI bar 65
+r:3/16 g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 66
+g4 d#4,d#5 g4 a#4 d#4,d#5:5/16 |
+# MIDI bar 67
+r g#4 d#4,d#5 g#4 c5 d#4,d#5:1/8 |
+# MIDI bar 68
+g4 d#4,d#5 g4 a#4 d#4,d#5:3/16 |
+# MIDI bar 69
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+# MIDI bar 70
+r d#4,d#5 r g#4 b4 e4,e5 r d#4,d#5 |
+duration: 11/16
+# MIDI bar 71
+r |
+duration: 1/16
+# MIDI bar 72
+g#4 b4 g#5 r g#5 |
+duration: 1/8
+# MIDI bar 73
+b5:1/16 g#6:1/16 g#5,g#6 g#5,g#6 g#5,g#6 |
+duration: 1/16
+# MIDI bar 74
+g#5,g#6 g#5,g#6:1/8 d#6 f6 c6 d#6 g#5,f6:1/8 |
+# MIDI bar 75
+e5,g#5:1/8 a#5 e5,b5 g#5 a#5 d#5,c6:1/8 |
+# MIDI bar 76
+g#5 d#5,c6 g#5 d#5,a#5:1/8 d#5,g#5:1/8 |
+duration: 1/8
+# MIDI bar 77
+r:1/16 g#4,g#5:3/16 g#4,g#5 g#4,g#5 |
+duration: 1/16
+# MIDI bar 78
+g#4,g#5 g#4,g#5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 79
+e4,g#4:1/8 a#4 e4,b4 g#4 a#4 d#4,c5:1/8 |
+# MIDI bar 80
+g#4 d#4,c5 g#4 d#4,a#4:1/8 d#4,g#4:1/8 |
+duration: 1/8
+# MIDI bar 81
+g#4,g#5 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5 c5,d#5:1/16 |
+# MIDI bar 82
+a#4 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5 c5,d#5:1/16 |
+duration: 1/16
+# MIDI bar 83
+a#4 c5,d#5 g#4 c#5 a#4 c#5 f5 g#4 |
+# MIDI bar 84
+c#5 f5 a#4 c#5 f5 g#4:1/8 f5 |
+# MIDI bar 85
+a#4 f5 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5:1/8 c5,d#5 |
+duration: 1/8
+# MIDI bar 86
+a#4 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5 c5,d#5:1/16 |
+duration: 1/16
+# MIDI bar 87
+a#4 c5,d#5 g#4 c#5 a#4 c#5 f5 g#4 |
+# MIDI bar 88
+c#5 f5 a#4 c#5 f5 g#4:1/8 f5 |
+# MIDI bar 89
+a4 d#5,f5 a#4,d5,f5,a#5:3/16 c5,d5,f5,a#5:1/8 d5,f5 |
+duration: 1/8
+# MIDI bar 90
+c5 a#4,d5,f5,a#5:3/16 c5,d5,f5,a#5 d5,f5:1/16 |
+duration: 1/16
+# MIDI bar 91
+c5 d5,f5 r d#5 a#4,a#5 d#5 f#5 c5,c6:1/8 |
+# MIDI bar 92
+d#5 a#4,a#5 d#5 f#5 c5,c6:1/8 d#5 |
+duration: 1/8
+# MIDI bar 93
+a#4,a#5 c#5,e5,c#6 c#5,e5,c#6 c5,e5,c6 |
+duration: 1/16
+# MIDI bar 94
+a#4,e5,a#5:1/8 g#4,f5 c#5 d#5 a#4,f#5:1/8 a#4 |
+# MIDI bar 95
+g#4,f5:1/8 g4,f5 c#5 d#5 f#4,f5:1/8 c5 |
+# MIDI bar 96
+f#4,d#5 f4,c#5:1/8 g#4,g#5:1/8 f5 g#4,g#5 f5 |
+# MIDI bar 97
+g#4,g#5 f5 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5:1/8 c5,d#5 |
+duration: 1/8
+# MIDI bar 98
+a#4 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5 c5,d#5:1/16 |
+duration: 1/16
+# MIDI bar 99
+a#4 c5,d#5 g#4 c#5 a#4 c#5 f5 g#4 |
+# MIDI bar 100
+c#5 f5 a#4 c#5 f5 g#4:1/8 f5 |
+# MIDI bar 101
+a#4 f5 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5:1/8 c5,d#5 |
+duration: 1/8
+# MIDI bar 102
+a#4 g#4,c5,d#5,g#5:3/16 a#4,c5,d#5,g#5 c5,d#5:1/16 |
+duration: 1/16
+# MIDI bar 103
+a#4 c5,d#5 g#4 c#5 a#4 c#5 f5 g#4 |
+# MIDI bar 104
+c#5 f5 a#4 c#5 f5 g#4:1/8 f5 |
+# MIDI bar 105
+a4 d#5,f5 a#4,d5,f5,a#5:3/16 c5,d5,f5,a#5:1/8 d5,f5 |
+duration: 1/8
+# MIDI bar 106
+c5 a#4,d5,f5,a#5:3/16 c5,d5,f5,a#5 d5,f5:1/16 |
+duration: 1/16
+# MIDI bar 107
+c5 d5,f5 r d#5 a#4,a#5 d#5 f#5 c5,c6:1/8 |
+# MIDI bar 108
+d#5 a#4,a#5 d#5 f#5 c5,c6:1/8 d#5 |
+duration: 1/8
+# MIDI bar 109
+a#4,a#5 c#5,e5,c#6 c#5,e5,c#6 c5,e5,c6 |
+duration: 1/16
+# MIDI bar 110
+a#4,e5,a#5:1/8 g#4,f5 c#5 d#5 a#4,f#5:1/8 a#4 |
+# MIDI bar 111
+g#4,f5:1/8 g4,f5 c#5 d#5 f#4,f5:1/8 c5 |
+# MIDI bar 112
+f#4,d#5 f4,c#5:1/8 c#5 f5 g#5 c#5,c#6:1/8 |
+duration: 1/8
+# MIDI bar 113
+r g#4,g#5 g#4,f5 g#4,g#5 |
+# MIDI bar 114
+g#4,f5 f5,g#5 f5,a#5:1/16 f5,c6 a#5:1/16 |
+duration: 1/16
+# MIDI bar 115
+g#5 f5 d#5 f5:1/8 g#4,c5:5/16 |
+# MIDI bar 116
+r d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 117
+c5 g4,d#5:1/8 f5 g4,a#4:5/16 |
+# MIDI bar 118
+r c#5 g4,f5 a#4 c#5 g4,f5:1/8 |
+# MIDI bar 119
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 120
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+duration: 1/8
+# MIDI bar 121
+d#5:1/16 g#4,g#5 g#4,f5 g#4,g#5 |
+# MIDI bar 122
+g#4,f5 f5,g#5 f5,a#5:1/16 f5,c6 a#5:1/16 |
+duration: 1/16
+# MIDI bar 123
+g#5 f5 g#5:1/8 f5:1/8 d#5 g#5:1/8 |
+# MIDI bar 124
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+duration: 1/8
+# MIDI bar 125
+f4,g#4 a#4:1/16 f4,g#4 e4,g#4 |
+duration: 1/16
+# MIDI bar 126
+e4,a#4 d#4,g#4:1/8 a#4 d#4,c5 g#4 a#4 d#4,c5:1/8 |
+# MIDI bar 127
+d4,g#4:1/8 a#4 d4,c5 g#4 r c#4,a#4:1/8 |
+duration: 1/8
+# MIDI bar 128
+d#4:1/16 c4,g#4 d#4,d#5 d#4,d#5 |
+# MIDI bar 129
+d#4,d#5 g#4,g#5 g#4,f5 g#4,g#5 |
+# MIDI bar 130
+g#4,f5 f5,g#5 f5,a#5:1/16 f5,c6 a#5:1/16 |
+duration: 1/16
+# MIDI bar 131
+g#5 f5 d#5 f5:1/8 g#4,c5:5/16 |
+# MIDI bar 132
+r d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 133
+c5 g4,d#5:1/8 f5 g4,a#4:5/16 |
+# MIDI bar 134
+r c#5 g4,f5 a#4 c#5 g4,f5:1/8 |
+# MIDI bar 135
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+# MIDI bar 136
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+duration: 1/8
+# MIDI bar 137
+d#5:1/16 g#4,g#5 g#4,f5 g#4,g#5 |
+# MIDI bar 138
+g#4,f5 f5,g#5 f5,a#5:1/16 f5,c6 a#5:1/16 |
+duration: 1/16
+# MIDI bar 139
+g#5 f5 g#5:1/8 f5:1/8 d#5 g#5:1/8 |
+# MIDI bar 140
+g#4,c5:1/8 d#5 g#4,f5 c5 d#5 g#4,f5:1/8 |
+duration: 1/8
+# MIDI bar 141
+f4,g#4 a#4:1/16 f4,g#4 e4,g#4 |
+duration: 1/16
+# MIDI bar 142
+e4,a#4 d#4,g#4:1/8 a#4 d#4,c5 g#4 a#4 d#4,c5:1/8 |
+# MIDI bar 143
+d4,g#4:1/8 a#4 d4,c5 g#4 r c#4,a#4:1/8 |
+duration: 1/8
+# MIDI bar 144
+d#4:1/16 c4,g#4 g4,c#5,d#5 g#4,c5,d#5,g#5 |
+
+[lower]
+duration: 1/8
+# MIDI bar 1
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 2
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 3
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 4
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 5
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+# MIDI bar 6
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+duration: 1/16
+# MIDI bar 7
+r:1/8 g#1 g#2 b2 g#3 g#2 g#3 |
+duration: 1/8
+# MIDI bar 8
+b3:1/16 g#4:1/16 g#3 r g#4 |
+# MIDI bar 9
+r d4,f4,g#4,b4 d4,f4,g#4,b4 d4,f4,g#4,b4 |
+# MIDI bar 10
+d4,f4,g#4,b4 d#4,g#4,c5 d#4,g#4,c5 d#4,g#4,c5 |
+# MIDI bar 11
+d#4,g#4,c5 e4,g#4,b4 e4,g#4,b4 d#4,g#4,c5 |
+# MIDI bar 12
+d#4,g#4,c5 d#4,g#4,c5 d#4,g4,c#5 g#4,c5 |
+# MIDI bar 13
+r d3,f3,g#3,b3 d3,f3,g#3,b3 d3,f3,g#3,b3 |
+# MIDI bar 14
+d3,f3,g#3,b3 d#3,g#3,c4 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 15
+d#3,g#3,c4 e3,g#3,b3 e3,g#3,b3 d#3,g#3,c4 |
+# MIDI bar 16
+d#3,g#3,c4 d#3,g#3,c4 d#3,g3,c#4 g#3,c4 |
+# MIDI bar 17
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 18
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 19
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 20
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 21
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+# MIDI bar 22
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+duration: 1/16
+# MIDI bar 23
+r:1/8 g#1 g#2 b2 g#3 g#2 g#3 |
+duration: 1/8
+# MIDI bar 24
+b3:1/16 g#4:1/16 g#3 r g#4 |
+# MIDI bar 25
+r d4,f4,g#4,b4 d4,f4,g#4,b4 d4,f4,g#4,b4 |
+# MIDI bar 26
+d4,f4,g#4,b4 d#4,g#4,c5 d#4,g#4,c5 d#4,g#4,c5 |
+# MIDI bar 27
+d#4,g#4,c5 e4,g#4,b4 e4,g#4,b4 d#4,g#4,c5 |
+# MIDI bar 28
+d#4,g#4,c5 d#4,g#4,c5 d#4,g4,c#5 g#4,c5 |
+# MIDI bar 29
+r d3,f3,g#3,b3 d3,f3,g#3,b3 d3,f3,g#3,b3 |
+# MIDI bar 30
+d3,f3,g#3,b3 d#3,g#3,c4 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 31
+d#3,g#3,c4 e3,g#3,b3 e3,g#3,b3 d#3,g#3,c4 |
+# MIDI bar 32
+d#3,g#3,c4 d#3,g#3,c4 d#3,g3,c#4 g#3,c4 |
+# MIDI bar 33
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 34
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 35
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 36
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 g#2,g#3 |
+# MIDI bar 37
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 38
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 a#2,a#3 |
+# MIDI bar 39
+b2,b3 c3,c4 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 40
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 g#2,g#3 |
+# MIDI bar 41
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 42
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 43
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 44
+d#3,g#3,c4 g#2,g#3 g#2,g#3 g2,g3 |
+# MIDI bar 45
+f#2,f#3 f2,f3 f2,f3 a2,a3 |
+# MIDI bar 46
+a2,a3 a#2,a#3 f3,a#3,c#4 f3,a#3,c#4 |
+# MIDI bar 47
+f3,a#3,c#4 a#2,f3,a#3 a#2,f3,a#3 d#2,d#3 |
+# MIDI bar 48
+g2,g3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 49
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 50
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 51
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 52
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 g#2,g#3 |
+# MIDI bar 53
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 54
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 a#2,a#3 |
+# MIDI bar 55
+b2,b3 c3,c4 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 56
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 g#2,g#3 |
+# MIDI bar 57
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 58
+d#3,g3,c#4 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 59
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 60
+d#3,g#3,c4 g#2,g#3 g#2,g#3 g2,g3 |
+# MIDI bar 61
+f#2,f#3 f2,f3 f2,f3 a2,a3 |
+# MIDI bar 62
+a2,a3 a#2,a#3 f3,a#3,c#4 f3,a#3,c#4 |
+# MIDI bar 63
+f3,a#3,c#4 a#2,f3,a#3 a#2,f3,a#3 d#2,d#3 |
+# MIDI bar 64
+g2,g3 g#2,g#3 g#3,c4,d#4 g#3,c4,d#4 |
+# MIDI bar 65
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 66
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 67
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 68
+a2,a3 a#2,a#3 d#3,g3,c#4 d#3,g3,c#4 |
+# MIDI bar 69
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+# MIDI bar 70
+d#2,d#3 e2,e3:1/4 d#2,d#3 |
+duration: 1/16
+# MIDI bar 71
+r:1/8 g#1 g#2 b2 g#3 g#2 g#3 |
+duration: 1/8
+# MIDI bar 72
+b3:1/16 g#4:1/16 g#3 r g#4 |
+# MIDI bar 73
+r d4,f4,g#4,b4 d4,f4,g#4,b4 d4,f4,g#4,b4 |
+# MIDI bar 74
+d4,f4,g#4,b4 d#4,g#4,c5 d#4,g#4,c5 d#4,g#4,c5 |
+# MIDI bar 75
+d#4,g#4,c5 e4,g#4,b4 e4,g#4,b4 d#4,g#4,c5 |
+# MIDI bar 76
+d#4,g#4,c5 d#4,g#4,c5 d#4,g4,c#5 g#4,c5 |
+# MIDI bar 77
+r d3,f3,g#3,b3 d3,f3,g#3,b3 d3,f3,g#3,b3 |
+# MIDI bar 78
+d3,f3,g#3,b3 d#3,g#3,c4 d#3,g#3,c4 d#3,g#3,c4 |
+# MIDI bar 79
+d#3,g#3,c4 e3,g#3,b3 e3,g#3,b3 d#3,g#3,c4 |
+# MIDI bar 80
+d#3,g#3,c4 d#3,g#3,c4 d#3,g3,c#4 g#3,c4 |
+# MIDI bar 81
+r d#2,d#3 g#3,c4,f#4 f#2,f#3 |
+# MIDI bar 82
+g#3,c4,f#4 f2,f3 g#3,c4,f#4 d#2,d#3 |
+# MIDI bar 83
+c2,c3 c#2,c#3 g#3,c#4,f4 g#2,g#3 |
+# MIDI bar 84
+g#3,c#4,f4 f2,f3 g#3,c#4,f4 c#2,c#3 |
+# MIDI bar 85
+d2,d3 d#2,d#3 g#3,c4,f#4 f#2,f#3 |
+# MIDI bar 86
+g#3,c4,f#4 f2,f3 g#3,c4,f#4 d#2,d#3 |
+# MIDI bar 87
+c2,c3 c#2,c#3 g#3,c#4,f4 g#2,g#3 |
+# MIDI bar 88
+g#3,c#4,f4 f2,f3 g#3,c#4,f4 c#2,c#3 |
+# MIDI bar 89
+c2,c3 a#1,a#2 a#3,d4,g#4 d2,d3 |
+# MIDI bar 90
+a#3,d4,g#4 f2,f3 a#3,d4,g#4 a#2,a#3 |
+# MIDI bar 91
+a#3,d4,g#4 d#2,d#3 a#3,d#4,f#4 f#2,f#3 |
+# MIDI bar 92
+a#3,d#4,f#4 d#2,d#3 a#3,d#4,f#4 f#2,f#3 |
+duration: 1/16
+# MIDI bar 93
+a#3,d#4,f#4:1/8 g3 a#3:1/8 c#4 e4 c#4 |
+duration: 1/8
+# MIDI bar 94
+a#3:1/16 g3:1/16 g#2,g#3 g#3,c#4,f4 a#2 |
+# MIDI bar 95
+g#3,a#3,d4 d#3,a#3,c#4 d#3,a#3,c#4 g#3,c4 |
+# MIDI bar 96
+g#3,c4 c#3,c#4 g#3,c#4,f4 g#3,c#4,f4 |
+# MIDI bar 97
+d2,d3 d#2,d#3 g#3,c4,f#4 f#2,f#3 |
+# MIDI bar 98
+g#3,c4,f#4 f2,f3 g#3,c4,f#4 d#2,d#3 |
+# MIDI bar 99
+c2,c3 c#2,c#3 g#3,c#4,f4 g#2,g#3 |
+# MIDI bar 100
+g#3,c#4,f4 f2,f3 g#3,c#4,f4 c#2,c#3 |
+# MIDI bar 101
+d2,d3 d#2,d#3 g#3,c4,f#4 f#2,f#3 |
+# MIDI bar 102
+g#3,c4,f#4 f2,f3 g#3,c4,f#4 d#2,d#3 |
+# MIDI bar 103
+c2,c3 c#2,c#3 g#3,c#4,f4 g#2,g#3 |
+# MIDI bar 104
+g#3,c#4,f4 f2,f3 g#3,c#4,f4 c#2,c#3 |
+# MIDI bar 105
+c2,c3 a#1,a#2 a#3,d4,g#4 d2,d3 |
+# MIDI bar 106
+a#3,d4,g#4 f2,f3 a#3,d4,g#4 a#2,a#3 |
+# MIDI bar 107
+a#3,d4,g#4 d#2,d#3 a#3,d#4,f#4 f#2,f#3 |
+# MIDI bar 108
+a#3,d#4,f#4 d#2,d#3 a#3,d#4,f#4 f#2,f#3 |
+duration: 1/16
+# MIDI bar 109
+a#3,d#4,f#4:1/8 g3 a#3:1/8 c#4 e4 c#4 |
+duration: 1/8
+# MIDI bar 110
+a#3:1/16 g3:1/16 g#2,g#3 g#3,c#4,f4 a#2 |
+# MIDI bar 111
+g#3,a#3,d4 d#3,a#3,c#4 d#3,a#3,c#4 g#3,c4 |
+# MIDI bar 112
+g#3,c4 c#3,c#4 g#2,g#3 c#2,c#3 |
+# MIDI bar 113
+c3,c4 c#3,c#4 g#3,c#4,f4 g#3,c#4,f4 |
+# MIDI bar 114
+c3,c4 c#3,c#4 g#3,c#4,f4 a#2,a#3 |
+# MIDI bar 115
+b2,b3 c3,c4 g#3,c4,d#4 g#3,c4,d#4 |
+# MIDI bar 116
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 117
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 118
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 119
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 120
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 a#2,a#3 |
+# MIDI bar 121
+c3,c4 c#3,c#4 g#3,c#4,f4 g#3,c#4,f4 |
+# MIDI bar 122
+c3,c4 c#3,c#4 g#3,c#4,f4 a#2,a#3 |
+# MIDI bar 123
+b2,b3 c3,c4 g#3,c4,d#4 g#3,c4,d#4 |
+# MIDI bar 124
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 125
+d#3,g#3,c4 c#2,c#3 c#2,c#3 a#1,a#2 |
+# MIDI bar 126
+d2,d3 d#2,d#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 127
+e2,e3 f2,f3 f2,f3 g2,g3 |
+# MIDI bar 128
+g2,g3 g#2,g#3 d#3,g#3,c4 a#2,a#3 |
+# MIDI bar 129
+c3,c4 c#3,c#4 g#3,c#4,f4 g#3,c#4,f4 |
+# MIDI bar 130
+c3,c4 c#3,c#4 g#3,c#4,f4 a#2,a#3 |
+# MIDI bar 131
+b2,b3 c3,c4 g#3,c4,d#4 g#3,c4,d#4 |
+# MIDI bar 132
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 133
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 134
+a2,a3 a#2,a#3 d#3,g3,c#4 d#2,d#3 |
+# MIDI bar 135
+g2,g3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 136
+d#3,g#3,c4 g#2,g#3 d#3,g#3,c4 a#2,a#3 |
+# MIDI bar 137
+c3,c4 c#3,c#4 g#3,c#4,f4 g#3,c#4,f4 |
+# MIDI bar 138
+c3,c4 c#3,c#4 g#3,c#4,f4 a#2,a#3 |
+# MIDI bar 139
+b2,b3 c3,c4 g#3,c4,d#4 g#3,c4,d#4 |
+# MIDI bar 140
+d#2,d#3 g#2,g#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 141
+d#3,g#3,c4 c#2,c#3 c#2,c#3 a#1,a#2 |
+# MIDI bar 142
+d2,d3 d#2,d#3 d#3,g#3,c4 d#2,d#3 |
+# MIDI bar 143
+e2,e3 f2,f3 f2,f3 g2,g3 |
+# MIDI bar 144
+g2,g3 g#2,g#3 d#2,d#3 g#1,g#2 |

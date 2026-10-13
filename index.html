@@ -1,152 +1,38 @@
 <!doctype html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Pianoskolan</title>
-    <meta name="description" content="Pianoskolan">
+    <title>Pianoskolan · Your piano studio</title>
+    <meta name="description" content="A little room for playing, recording, and making music.">
     <meta name="author" content="Andreas">
-
-    <style rel="stylesheet" type="text/css">
-        html, body {
-            height: 100%;
-            width: 100%;
-        }
-        
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: black;
-        }
-
-        .main {
-            align-items: center;
-            display: flex;
-            justify-content: center;
-            min-height: 100%;
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-        }
-
-        .pianoholder {
-            background-color: white;
-            width: 100%;
-            max-width: 1800px;
-            min-width: 0;
-        }
-
-        .piano-scroll {
-            overflow-x: auto;
-        }
-
-        #clav {
-            display: flex;
-            width: max-content;
-        }
-
-        .score-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px;
-            padding: 0 12px;
-        }
-
-        .score-row textarea {
-            flex: 1 1 16rem;
-            min-width: 0;
-            min-height: 5rem;
-            box-sizing: border-box;
-            resize: vertical;
-        }
-
-        @media (max-width: 600px) {
-            .score-row textarea {
-                flex-basis: 100%;
-            }
-        }
-
-        #clav > div {
-            flex-shrink: 0;
-            position: relative;
-            float: left;
-            width: 45px;
-            height: 200px;
-            border: 1px solid black;
-        }
-
-        #clav > .black {
-            height: 120px;
-            width: 30px;
-            position: relative;
-            margin-left: -16px;
-            margin-right: -16px;
-            background: black;
-            z-index: 10;
-        }
-
-        #clav > div.highlighted, #clav > div.held {
-            background: red;
-        }
-
-        #clav > div > .keyboard-label {
-            top: 10px;
-            bottom: auto;
-            font-weight: bold;
-        }
-
-        .keyboard-controls {
-            padding: 12px;
-        }
-
-        #clav > div > span {
-            display: block;
-            width: 100%;
-            text-align: center;
-            position: absolute;
-            bottom: 10px;
-        }
-
-        #clav > div.black > span {
-            color: white;
-        }
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<div class="main">
+<body>
+<main class="main">
+    <header class="site-header">
+        <a class="brand" href="./" aria-label="Pianoskolan home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>Pianoskolan<span class="brand-dot">.</span></a>
+        <span class="header-note">A piano, a keyboard, a little inspiration.</span>
+    </header>
+    <section class="intro" aria-labelledby="pageTitle">
+        <div><p class="eyebrow">YOUR PERSONAL PIANO STUDIO</p><h1 id="pageTitle">Make room for <em>music.</em></h1><p class="intro-copy">Follow a melody. Find a new one. Make it yours.</p></div>
+        <span class="intro-decoration" aria-hidden="true">♪</span>
+    </section>
     <div class="pianoholder">
-        <div class="keyboard-controls">
-            <button id="keyboardToggle" type="button" aria-pressed="false">Grab keyboard</button>
-            <label for="keyboardLayout">Keyboard layout:</label>
-            <select id="keyboardLayout">
-                <option value="english" selected>English (US)</option>
-                <option value="swedish">Swedish</option>
-            </select>
-            <label for="keyboardOctave">Keyboard octave:</label>
-            <select id="keyboardOctave">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4" selected>4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-            </select>
-            <label><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
-            <span id="splitKeyboardSettings" hidden>
-                <label for="splitKey">First key in upper half:</label>
-                <select id="splitKey"></select>
-                <label for="splitOctaves">Lower half: octaves down</label>
-                <input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required style="width:3em"/>
-                <span>Sounds cover C1–D8; keys outside that range are silent.</span>
-            </span>
-            <p id="keyboardHelp"></p>
-        </div>
-        <div class="piano-scroll">
-        <div id="clav">
+        <section class="instrument panel" aria-labelledby="instrumentTitle">
+            <div class="section-heading"><div><p class="eyebrow">01 / PLAY</p><h2 id="instrumentTitle">At your fingertips</h2></div><span class="section-note">Click the keys or grab your keyboard.</span></div>
+            <div class="keyboard-controls instrument-controls">
+                <button id="keyboardToggle" class="button-primary" type="button" aria-pressed="false">Grab keyboard</button>
+                <div class="field"><label for="keyboardLayout">Keyboard layout</label><select id="keyboardLayout"><option value="english" selected>English (US)</option><option value="swedish">Swedish</option></select></div>
+                <div class="field octave-field"><label for="keyboardOctave">Octave</label><select id="keyboardOctave"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected>4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></div>
+                <label class="checkbox-label"><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
+                <span id="splitKeyboardSettings" class="split-settings" hidden>
+                    <span class="field"><label for="splitKey">First key in upper half</label><select id="splitKey"></select></span>
+                    <span class="field"><label for="splitOctaves">Lower half: octaves down</label><input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required/></span>
+                    <span class="split-note">Sounds cover C1–D8; keys outside that range are silent.</span>
+                </span>
+            </div>
+            <div class="piano-frame"><div class="piano-scroll"><div id="clav">
             <div><span>c2</span></div>
             <div class="black"><span>c#2</span></div>
             <div><span>d2</span></div>
@@ -210,56 +96,34 @@
             <div><span>c7</span></div>
             <div class="black"><span>c#7</span></div>
             <div><span>d7</span></div>
-        </div>
-        </div>
-        <br style="clear:both"/>
-        <br style="clear:both"/>
-        <div class="score-row">
-            <textarea id="whatToPlay" rows="3" aria-label="Top sequence"></textarea>
-            <button id="recordTop" type="button">Record top (V)</button>
-            <button id="resetTop" type="button">Reset</button>
-        </div>
-        <br style="clear:both"/>
-        <br style="clear:both"/>
-        <div class="score-row">
-            <textarea id="whatToPlay2" rows="3" aria-label="Bottom sequence"></textarea>
-            <button id="recordBottom" type="button">Record bottom (B)</button>
-            <button id="resetBottom" type="button">Reset</button>
-        </div>
-        <p id="recordingStatus" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
-        <p>Separate notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). Starting playback from the beginning pads the shorter line with rests so both finish together.</p>
-        <div class="keyboard-controls">
-            <button id="saveTracks" type="button">Save tracks (.abr)</button>
-            <button id="loadTracks" type="button">Load tracks (.abr)</button>
-            <input id="trackFile" type="file" accept=".abr,text/plain" hidden/>
-            <p id="trackFileStatus" role="status">Save downloads both tracks. Load opens a file from your device and replaces both tracks.</p>
-        </div>
-        <br style="clear:both"/>
-        <br style="clear:both"/>
-        <label for="tempo">Tempo: </label><input id="tempo" type="number" min="30" max="4000" value="120" required/>
-        <label for="recordGrid">Recording grid:</label>
-        <select id="recordGrid">
-            <option value="4">Quarter notes</option>
-            <option value="8" selected>Eighth notes</option>
-        </select>
-        <button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button>
-        <span id="metronomeDescription">4/4 · accented first beat · M toggles while keyboard is grabbed</span>
-        <button id="playButton" type="button">Play</button>
-        <button id="pauseButton" type="button">Pause</button>
-        <button id="stopButton" type="button">Stop and start over</button>
-        <br style="clear:both"/>
-        <br style="clear:both"/>
-        <button id="playCm">Cm</button>
-        <button id="playFm">Fm</button>
-        <button id="playG">G</button>
-        <div class="keyboard-controls">
-            <label for="sustain">Sustain / reverb:</label>
-            <input id="sustain" type="range" min="0" max="100" step="0.1" value="50" aria-describedby="sustainHelp"/>
-            <output id="sustainValue" for="sustain">Original sound</output>
-            <p id="sustainHelp">Middle: original sound. Left: shorter notes. Right: added reverb. Note-length changes apply to new notes.</p>
-        </div>
+            </div></div></div>
+            <p id="keyboardHelp" class="help-text keyboard-help"></p>
+        </section>
+        <section class="composition panel" aria-labelledby="compositionTitle">
+            <div class="section-heading"><div><p class="eyebrow">02 / CREATE</p><h2 id="compositionTitle">Two tracks. Endless possibilities.</h2></div><div class="file-actions"><button id="saveTracks" type="button">Save tracks (.abr)</button><button id="loadTracks" type="button">Load tracks (.abr)</button><input id="trackFile" type="file" accept=".abr,text/plain" hidden/></div></div>
+            <div class="transport">
+                <div class="transport-actions"><button id="playButton" class="button-primary" type="button"><span aria-hidden="true">▶</span> Play</button><button id="pauseButton" type="button"><span aria-hidden="true">Ⅱ</span> Pause</button><button id="stopButton" type="button">Stop and start over</button></div>
+                <div class="field tempo-field"><label for="tempo">Tempo <span class="unit">BPM</span></label><input id="tempo" type="number" min="30" max="4000" value="120" required/></div>
+                <div class="field"><label for="recordGrid">Recording grid</label><select id="recordGrid"><option value="4">Quarter notes</option><option value="8" selected>Eighth notes</option></select></div>
+            </div>
+            <div class="tracks">
+                <div class="track-card"><div class="track-heading"><label for="whatToPlay"><span class="track-number">01</span> Upper track</label><div class="track-actions"><button id="recordTop" class="record-button" type="button">Record top (V)</button><button id="resetTop" class="quiet-button" type="button">Reset</button></div></div><div class="score-row"><textarea id="whatToPlay" rows="6" aria-label="Top sequence" placeholder="Your melody starts here…" spellcheck="false"></textarea></div></div>
+                <div class="track-card"><div class="track-heading"><label for="whatToPlay2"><span class="track-number">02</span> Lower track</label><div class="track-actions"><button id="recordBottom" class="record-button" type="button">Record bottom (B)</button><button id="resetBottom" class="quiet-button" type="button">Reset</button></div></div><div class="score-row"><textarea id="whatToPlay2" rows="6" aria-label="Bottom sequence" placeholder="Give it a little accompaniment…" spellcheck="false"></textarea></div></div>
+            </div>
+            <p id="recordingStatus" class="help-text status-line" role="status">V/B arms or stops recording and starts the metronome immediately. The first note starts recording from the beginning of its bar, filling earlier beats with rests. Escape cancels and restores the previous line.</p>
+            <div class="composition-footer"><p class="help-text">Separate notes with spaces (c4 d4); use r for a rest and commas for a chord (c4,e4,g4). Starting playback from the beginning pads the shorter line with rests so both finish together.</p><div class="chord-presets"><span>Start with a chord</span><button id="playCm">Cm</button><button id="playFm">Fm</button><button id="playG">G</button></div></div>
+            <p id="trackFileStatus" class="help-text file-status" role="status">Save downloads both tracks. Load opens a file from your device and replaces both tracks.</p>
+        </section>
+        <section class="sound panel" aria-labelledby="soundTitle">
+            <div class="section-heading"><div><p class="eyebrow">03 / FINESSE</p><h2 id="soundTitle">Set the mood</h2></div></div>
+            <div class="sound-grid">
+                <div class="metronome-card"><span class="sound-icon" aria-hidden="true">♩</span><div class="sound-content"><h3>Keep the pulse</h3><span id="metronomeDescription" class="help-text">4/4 · accented first beat · M toggles while keyboard is grabbed</span></div><button id="metronomeToggle" type="button" aria-pressed="false">Start metronome</button></div>
+                <div class="sustain-card"><div class="sustain-heading"><label for="sustain">Sustain / reverb</label><output id="sustainValue" for="sustain">Original sound</output></div><input id="sustain" type="range" min="0" max="100" step="0.1" value="50" aria-describedby="sustainHelp"/><div class="range-labels" aria-hidden="true"><span>Short &amp; crisp</span><span>Let it linger</span></div><p id="sustainHelp" class="help-text">Middle: original sound. Left: shorter notes. Right: added reverb. Note-length changes apply to new notes.</p></div>
+            </div>
+        </section>
     </div>
-</div>
+    <footer class="site-footer"><span>Pianoskolan</span><span>Made for the joy of making music.</span></footer>
+</main>
 <script type="text/javascript">
     var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
