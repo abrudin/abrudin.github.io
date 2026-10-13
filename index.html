@@ -127,10 +127,13 @@
             </select>
             <label for="keyboardOctave">Keyboard octave:</label>
             <select id="keyboardOctave">
+                <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4" selected>4</option>
                 <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
             </select>
             <label><input id="splitKeyboard" type="checkbox"/> Split keyboard</label>
             <span id="splitKeyboardSettings" hidden>
@@ -138,7 +141,7 @@
                 <select id="splitKey"></select>
                 <label for="splitOctaves">Lower half: octaves down</label>
                 <input id="splitOctaves" type="number" min="0" max="4" step="1" value="1" required style="width:3em"/>
-                <span>Keys below the piano's range are silent.</span>
+                <span>Sounds cover C1–D8; keys outside that range are silent.</span>
             </span>
             <p id="keyboardHelp"></p>
         </div>
@@ -252,6 +255,12 @@
     var playFns = {};
     var playbackSources = new Set();
 
+    function noteForPianoIndex(index) {
+        if (index < -12 || index > 74) return null;
+        var names = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
+        return names[(index + 12) % 12] + (Math.floor(index / 12) + 2);
+    }
+
     function init() {
         var loadSound = function (url, cb) {
             var request = new XMLHttpRequest();
@@ -307,10 +316,10 @@
             names.forEach(function (name, index) {
                 playFns[name] = function () {
                     var source = play(Math.pow(1.0295, index * 2), startIndex + index >= 42 ? 1.5 : 1);
-                    highlight(keys[startIndex + index]);
+                    if (keys[startIndex + index]) highlight(keys[startIndex + index]);
                     return source;
                 };
-                loadKeyInternal(keys[startIndex + index], function () {
+                if (keys[startIndex + index]) loadKeyInternal(keys[startIndex + index], function () {
                     recordNote(name);
                     playFns[name]();
                 });
@@ -324,6 +333,10 @@
                 (function (file, index, snd) {
                     loadSound(file, function (play) {
                         loadKey(index, play, snd);
+                        if (index === 0) {
+                            var lowerNotes = Array.from({ length: 12 }, function (value, offset) { return noteForPianoIndex(offset - 12); });
+                            loadKey(-12, function (speed, volume) { return play(speed * 0.5, volume); }, lowerNotes);
+                        }
                     });
                 })(fileName, idx, sound);
                 idx += sound.length;
@@ -350,6 +363,10 @@
             ["samples/fis6.wav", "f#6", "g6", "g#6"],
             ["samples/a6.wav", "a6", "a#6", "b6"],
             ["samples/c7.wav", "c7", "c#7", "d7"],
+            ["samples/dis7.wav", "d#7", "e7", "f7"],
+            ["samples/fis7.wav", "f#7", "g7", "g#7"],
+            ["samples/a7.wav", "a7", "a#7", "b7"],
+            ["samples/c8.wav", "c8", "c#8", "d8"],
         ]);
     }
 
@@ -551,16 +568,16 @@
     });
 
     function releaseKeyboardNotes() {
-        heldKeys.forEach(function (key) { key.classList.remove("held"); });
+        heldKeys.forEach(function (key) { if (key) key.classList.remove("held"); });
         heldKeys.clear();
     }
 
     function effectiveKeyboardOctave() {
         var offset = (heldShifts.has("ShiftRight") ? 1 : 0) - (heldShifts.has("ShiftLeft") ? 1 : 0);
-        return Math.max(2, Math.min(5, Number(keyboardOctave.value) + offset));
+        return Math.max(1, Math.min(7, Number(keyboardOctave.value) + offset));
     }
 
-    function keyboardPianoKey(index) {
+    function keyboardPianoIndex(index) {
         var pianoIndex = (effectiveKeyboardOctave() - 2) * 12 + keyboardNoteOffsets[index];
         if (splitKeyboard.checked) {
             var codes = keyboardLayout.value === "swedish" ? swedishKeyboardCodes : keyboardCodes;
@@ -571,7 +588,11 @@
                 pianoIndex -= octaves * 12;
             }
         }
-        return pianoKeys[pianoIndex];
+        return pianoIndex;
+    }
+
+    function keyboardPianoKey(index) {
+        return pianoKeys[keyboardPianoIndex(index)];
     }
 
     function updateSplitKeyOptions() {
@@ -595,7 +616,7 @@
         updateSplitKeyOptions();
         document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
         var keyboardLabels = keyboardLayouts[keyboardLayout.value];
-        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 2–5). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". V/B records the top/bottom line using the selected recording grid and starting tempo. Escape cancels recording and releases the keyboard.";
+        document.getElementById("keyboardHelp").textContent = "Grab keyboard to play " + keyboardLabels.join(" ") + ". Z lowers the octave; X raises it. Hold left Shift for one octave down or right Shift for one octave up (within octaves 1–7). Both Shifts cancel out. Playing octave: " + effectiveKeyboardOctave() + ". Sounds cover C1–D8, including notes outside the visible piano. V/B records the top/bottom line using the selected recording grid and starting tempo. Escape cancels recording and releases the keyboard.";
         keyboardLabels.forEach(function (text, index) {
             var key = keyboardPianoKey(index);
             if (!key) return;
@@ -680,13 +701,13 @@
         event.preventDefault();
         if (event.repeat || heldKeys.has(event.code)) return;
         var key = keyboardPianoKey(index);
-        if (!key) return;
-        var play = playFns[key.querySelector("span").textContent];
+        var note = noteForPianoIndex(keyboardPianoIndex(index));
+        var play = playFns[note];
         if (!play) return;
         if (audioCtx.state === "suspended") audioCtx.resume();
         heldKeys.set(event.code, key);
-        key.classList.add("held");
-        recordNote(key.querySelector("span").textContent);
+        if (key) key.classList.add("held");
+        recordNote(note);
         play();
     });
     document.addEventListener("keyup", function (event) {
@@ -694,9 +715,9 @@
             updateKeyboardLabels(true);
             return;
         }
+        if (!heldKeys.has(event.code)) return;
         var key = heldKeys.get(event.code);
-        if (!key) return;
-        key.classList.remove("held");
+        if (key) key.classList.remove("held");
         heldKeys.delete(event.code);
     });
     window.addEventListener("blur", function () { setKeyboardGrabbed(false); });
