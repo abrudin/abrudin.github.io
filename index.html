@@ -49,8 +49,18 @@
             z-index: 10;
         }
 
-        #clav > div.highlighted {
+        #clav > div.highlighted, #clav > div.held {
             background: red;
+        }
+
+        #clav > div > .keyboard-label {
+            top: 10px;
+            bottom: auto;
+            font-weight: bold;
+        }
+
+        .keyboard-controls {
+            padding: 12px;
         }
 
         #clav > div > span {
@@ -69,6 +79,17 @@
 </head>
 <div class="main">
     <div class="pianoholder">
+        <div class="keyboard-controls">
+            <button id="keyboardToggle" type="button" aria-pressed="false">Grab keyboard</button>
+            <label for="keyboardOctave">Keyboard octave:</label>
+            <select id="keyboardOctave">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4" selected>4</option>
+                <option value="5">5</option>
+            </select>
+            <p id="keyboardHelp">Grab keyboard to play A W S E D F T G Y H U J K O L P ;. Escape releases the keyboard.</p>
+        </div>
         <div id="clav">
             <div><span>c2</span></div>
             <div class="black"><span>c#2</span></div>
@@ -247,6 +268,78 @@
     }
 
     init();
+
+    var keyboardGrabbed = false;
+    var heldKeys = new Map();
+    var keyboardCodes = ["KeyA", "KeyW", "KeyS", "KeyE", "KeyD", "KeyF", "KeyT", "KeyG", "KeyY", "KeyH", "KeyU", "KeyJ", "KeyK", "KeyO", "KeyL", "KeyP", "Semicolon"];
+    var keyboardLabels = ["A", "W", "S", "E", "D", "F", "T", "G", "Y", "H", "U", "J", "K", "O", "L", "P", ";"];
+    var pianoKeys = Array.from(document.querySelectorAll("#clav > div"));
+    var keyboardToggle = document.getElementById("keyboardToggle");
+    var keyboardOctave = document.getElementById("keyboardOctave");
+
+    function releaseKeyboardNotes() {
+        heldKeys.forEach(function (key) { key.classList.remove("held"); });
+        heldKeys.clear();
+    }
+
+    function updateKeyboardLabels() {
+        releaseKeyboardNotes();
+        document.querySelectorAll(".keyboard-label").forEach(function (label) { label.remove(); });
+        var start = (Number(keyboardOctave.value) - 2) * 12;
+        keyboardLabels.forEach(function (text, index) {
+            var label = document.createElement("span");
+            label.className = "keyboard-label";
+            label.textContent = text;
+            pianoKeys[start + index].appendChild(label);
+        });
+    }
+
+    function setKeyboardGrabbed(grabbed) {
+        keyboardGrabbed = grabbed;
+        releaseKeyboardNotes();
+        keyboardToggle.textContent = grabbed ? "Ungrab keyboard" : "Grab keyboard";
+        keyboardToggle.setAttribute("aria-pressed", String(grabbed));
+        if (grabbed && audioCtx.state === "suspended") audioCtx.resume();
+    }
+
+    keyboardToggle.addEventListener("click", function () {
+        setKeyboardGrabbed(!keyboardGrabbed);
+    });
+    keyboardOctave.addEventListener("change", updateKeyboardLabels);
+    updateKeyboardLabels();
+
+    document.addEventListener("keydown", function (event) {
+        if (!keyboardGrabbed) return;
+        if (event.code === "Escape") {
+            event.preventDefault();
+            setKeyboardGrabbed(false);
+            return;
+        }
+        // Keep browser shortcuts and form controls usable while grabbed.
+        if (event.ctrlKey || event.metaKey || event.altKey || event.isComposing ||
+            event.target.closest("input, textarea, select, [contenteditable]")) return;
+        var index = keyboardCodes.indexOf(event.code);
+        if (index === -1) return;
+        event.preventDefault();
+        if (event.repeat || heldKeys.has(event.code)) return;
+        var key = pianoKeys[(Number(keyboardOctave.value) - 2) * 12 + index];
+        var play = playFns[key.querySelector("span").textContent];
+        if (!play) return;
+        if (audioCtx.state === "suspended") audioCtx.resume();
+        heldKeys.set(event.code, key);
+        key.classList.add("held");
+        play();
+    });
+    document.addEventListener("keyup", function (event) {
+        var key = heldKeys.get(event.code);
+        if (!key) return;
+        key.classList.remove("held");
+        heldKeys.delete(event.code);
+    });
+    window.addEventListener("blur", function () { setKeyboardGrabbed(false); });
+    document.addEventListener("visibilitychange", function () {
+        if (document.hidden) setKeyboardGrabbed(false);
+    });
 
     var loop = false;
 
