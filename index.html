@@ -32,6 +32,11 @@
                     <span class="split-note">Sounds cover C1–D8; keys outside that range are silent.</span>
                 </span>
             </div>
+            <div class="instrument-controls midi-controls">
+                <button id="midiToggle" type="button" aria-pressed="false">Connect MIDI</button>
+                <div id="midiInputField" class="field" hidden><label for="midiInput">MIDI input</label><select id="midiInput"></select></div>
+                <p id="midiStatus" class="help-text" role="status">Connect a MIDI keyboard to play and record.</p>
+            </div>
             <div class="piano-frame"><div class="piano-scroll"><div id="clav">
             <div><span>c2</span></div>
             <div class="black"><span>c#2</span></div>
@@ -234,8 +239,8 @@
                 key.addEventListener("click", fn);
             };
             names.forEach(function (name, index) {
-                playFns[name] = function () {
-                    var source = play(Math.pow(1.0295, index * 2), startIndex + index >= 42 ? 1.5 : 1);
+                playFns[name] = function (strength) {
+                    var source = play(Math.pow(1.0295, index * 2), (startIndex + index >= 42 ? 1.5 : 1) * (strength === undefined ? 1 : strength));
                     if (keys[startIndex + index]) highlight(keys[startIndex + index]);
                     return source;
                 };
@@ -971,5 +976,6 @@
     });
 
 </script>
+<script src="midi.js"></script>
 </body>
 </html>

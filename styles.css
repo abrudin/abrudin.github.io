@@ -169,3 +169,7 @@ input[type="range"] { width: 100%; margin: 8px 0; accent-color: var(--accent); c
 }
 
 #clav > div.black.highlighted > span, #clav > div.black.held > span { color: #111111; }
+.midi-controls { align-items: center; }
+#clav > div.midi-held { background: #c6c6c6; box-shadow: inset 0 -3px 0 #777777; }
+#clav > div.black.midi-held { background: #a9a9a9; box-shadow: inset 0 -4px 0 #6b6b6b; }
+#clav > div.black.midi-held > span { color: #111111; }
